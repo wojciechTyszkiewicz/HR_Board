@@ -14,11 +14,6 @@ Sprawdź jakie zmiany zostały wprowadzone:
 
 `git status`
 
-Przed wysłaniem zmian warto odpalić eslinta, który wyłapie dodatkowo potencjalne
-błędy, problemy:
-
-`npm run lint`
-
 Dodaj zmiany do commita:
 
 `git add .`
