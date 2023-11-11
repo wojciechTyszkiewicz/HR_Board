@@ -1,6 +1,6 @@
 # Gitflow
 
-![alt text](./../tasks/gitflow/gitflow-mentoring.PNG)
+![alt text](./../gitflow/gitflow-mentoring.PNG)
 
 Będąc na gałęzi `main` upewnij się, że masz pobrane ostatnie zmiany:
 
@@ -47,9 +47,9 @@ A a nowy branch który tworzysz na jego podstawie nazwiemy B. Jeżeli zmergujesz
 branch A do mastera to musisz wejść na branch B i zrobić rebase do mastera, jest
 to opisałem to tym diagramem:
 
-![alt text](./../tasks/gitflow/parallel-branches.png)
+![alt text](./../gitflow/parallel-branches.png)
 
-![alt text](./../tasks/gitflow/parallel-branches-2.png)
+![alt text](./../gitflow/parallel-branches-2.png)
 
 A co jeśli dojdzie do sytuacji w której branch A targetuje master brancha ale
 jeszcze nie został zmergowany, branch B wyszedł z brancha A i też jest
