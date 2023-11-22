@@ -19,7 +19,6 @@ namespace HR_Board
                 o.DefaultApiVersion = new ApiVersion(1, 0);
                 o.AssumeDefaultVersionWhenUnspecified = true;
                 o.ReportApiVersions = true;
-                o.ApiVersionReader = new HeaderApiVersionReader("api-version");
             });
 
 
