@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HR_Board.Data
 {
-    public class HR_BoardDbContext : IdentityDbContext<ApiUser>
+    public class AppDbContext : IdentityDbContext<ApiUser>
     {
-        public HR_BoardDbContext(DbContextOptions<HR_BoardDbContext> options) : base(options) 
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) 
         { 
         }
     }
