@@ -22,10 +22,25 @@ namespace HR_Board.Data
         public override int SaveChanges()
         {
             UpdateTimestamps();
+            SetCreatedAt();
             return base.SaveChanges();
         }
 
-        
+        private void SetCreatedAt()
+        {
+            var entries = ChangeTracker.Entries<BaseEntity>()
+                .Where(e => e.State == EntityState.Added);
+
+            foreach (var entity in entries)
+            {
+                if (entity.Entity.CreatedAt == DateTime.MinValue)
+                {
+                    entity.Entity.CreatedAt = DateTime.UtcNow;
+                }
+            }
+        }
+
+
         private void UpdateTimestamps()
         {
             var entities = ChangeTracker.Entries()
