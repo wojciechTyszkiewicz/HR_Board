@@ -19,7 +19,7 @@ namespace HR_Board
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             // Konfiguracja Identity
-            builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+            builder.Services.AddIdentity<ApiUser, IdentityRole>(options =>
             {
                 options.Password.RequireLowercase = true; // Wymagana mała litera
                 options.Password.RequireUppercase = true; // Wymagana duża litera
