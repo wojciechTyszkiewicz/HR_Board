@@ -14,9 +14,7 @@ namespace HR_Board
 
             // Add services to the container.
 
-            // Add DbContext
-            builder.Services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
             // Konfiguracja Identity
             builder.Services.AddIdentity<ApiUser, IdentityRole>(options =>
@@ -27,7 +25,6 @@ namespace HR_Board
                 options.Password.RequireNonAlphanumeric = true; // Wymagany znak specjalny
                 options.Password.RequiredLength = 8; // Minimalna długość: 8 znaków
             })
-                .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
 
 
