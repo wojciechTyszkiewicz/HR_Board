@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HR_Board.Data
 {
-    public class HR_BoardDbContext : IdentityDbContext<ApiUser>
+    public class AppDbContext : IdentityDbContext<ApiUser>
     {
-        public HR_BoardDbContext(DbContextOptions<HR_BoardDbContext> options) : base(options) 
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) 
         { 
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -13,7 +13,10 @@ namespace HR_Board.Data
             base.OnModelCreating(modelBuilder);
 
             // Konfiguracja BaseEntity
-            modelBuilder.Entity<BaseEntity>().Property(b => b.Id).HasDefaultValueSql("newsequentialid()");
+            modelBuilder.Entity<BaseEntity>()
+                .Property(b => b.Id)
+                .IsRequired()
+                .ValueGeneratedOnAdd();
         }
 
         public override int SaveChanges()
