@@ -1,6 +1,6 @@
 ﻿namespace HR_Board.Data
 {
-    public class BaseEntity
+    public abstract class BaseEntity
     {
         public Guid Id { get; set; }
         public DateTime CreatedAt { get; set; }
