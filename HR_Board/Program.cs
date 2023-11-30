@@ -58,6 +58,7 @@ namespace HR_Board
             app.UseAuthentication();
             app.UseAuthorization();
 
+            
 
             app.MapControllers();
 

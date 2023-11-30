@@ -1,12 +1,11 @@
-﻿using HR_Board.Data.Interfaces;
-
-namespace HR_Board.Data
+﻿namespace HR_Board.Data.Interfaces
 {
-    public abstract class BaseEntity : IBaseEntity
+    public interface IBaseEntity
     {
         public Guid Id { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+
 
     }
 }
