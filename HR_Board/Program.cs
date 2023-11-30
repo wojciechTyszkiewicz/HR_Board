@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 
 namespace HR_Board
@@ -15,7 +14,7 @@ namespace HR_Board
 
 
             // Konfiguracja Identity
-            builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+            builder.Services.AddIdentity<ApiUser, IdentityRole>(options =>
             {
                 options.Password.RequireLowercase = true; // Wymagana mała litera
                 options.Password.RequireUppercase = true; // Wymagana duża litera
