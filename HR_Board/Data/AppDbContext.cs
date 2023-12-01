@@ -31,13 +31,14 @@ namespace HR_Board.Data
 
             foreach (var entity in entities)
             {
+                var baseEntity = (BaseEntity)entity.Entity;
                 if (entity.State == EntityState.Modified)
                 {
-                    ((BaseEntity)entity.Entity).UpdatedAt = DateTime.UtcNow;
+                    baseEntity.UpdatedAt = DateTime.UtcNow;
                 }
                 if (entity.State == EntityState.Added)
                 {
-                    ((BaseEntity)entity.Entity).CreatedAt = DateTime.UtcNow;
+                    baseEntity.CreatedAt = DateTime.UtcNow;
                 }
             }
         }
