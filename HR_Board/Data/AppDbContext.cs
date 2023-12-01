@@ -1,12 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace HR_Board.Data
 {
     public class AppDbContext : DbContext
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) 
-        { 
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        {
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -22,24 +21,8 @@ namespace HR_Board.Data
         public override int SaveChanges()
         {
             UpdateTimestamps();
-            SetCreatedAt();
             return base.SaveChanges();
         }
-
-        private void SetCreatedAt()
-        {
-            var entries = ChangeTracker.Entries<BaseEntity>()
-                .Where(e => e.State == EntityState.Added);
-
-            foreach (var entity in entries)
-            {
-                if (entity.Entity.CreatedAt == DateTime.MinValue)
-                {
-                    entity.Entity.CreatedAt = DateTime.UtcNow;
-                }
-            }
-        }
-
 
         private void UpdateTimestamps()
         {
@@ -51,6 +34,10 @@ namespace HR_Board.Data
                 if (entity.State == EntityState.Modified)
                 {
                     ((BaseEntity)entity.Entity).UpdatedAt = DateTime.UtcNow;
+                }
+                if (entity.State == EntityState.Added)
+                {
+                    ((BaseEntity)entity.Entity).CreatedAt = DateTime.UtcNow;
                 }
             }
         }
