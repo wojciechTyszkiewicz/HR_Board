@@ -27,19 +27,11 @@ namespace HR_Board.Data
         private void UpdateTimestamps()
         {
             var entities = ChangeTracker.Entries()
-                .Where(x => x.Entity is BaseEntity && (x.State == EntityState.Added || x.State == EntityState.Modified));
+                .Where(x => x.Entity is BaseEntity && x.State == EntityState.Modified);
 
             foreach (var entity in entities)
             {
-                var baseEntity = (BaseEntity)entity.Entity;
-                if (entity.State == EntityState.Modified)
-                {
-                    baseEntity.UpdatedAt = DateTime.UtcNow;
-                }
-                if (entity.State == EntityState.Added)
-                {
-                    baseEntity.CreatedAt = DateTime.UtcNow;
-                }
+               baseEntity.UpdatedAt = DateTime.UtcNow;
             }
         }
     }
