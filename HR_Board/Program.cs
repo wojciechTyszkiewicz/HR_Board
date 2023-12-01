@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.EntityFrameworkCore;
 
 namespace HR_Board
 {
@@ -12,6 +13,12 @@ namespace HR_Board
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+
+            // Add DbContext
+            builder.Services.AddDbContext<AppDbContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DbConnection")));
+
+
 
 
 
@@ -54,6 +61,7 @@ namespace HR_Board
             app.UseAuthentication();
             app.UseAuthorization();
 
+            
 
             app.MapControllers();
 
