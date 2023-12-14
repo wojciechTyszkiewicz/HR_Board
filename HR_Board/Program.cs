@@ -13,10 +13,12 @@ namespace HR_Board
 
             // Add services to the container.
 
-
+            // Add DbContext
+            builder.Services.AddDbContext<HR_BoardDbContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             // Konfiguracja Identity
-            builder.Services.AddIdentity<ApiUser, IdentityRole>(options =>
+            builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
             {
                 options.Password.RequireLowercase = true; // Wymagana mała litera
                 options.Password.RequireUppercase = true; // Wymagana duża litera
@@ -24,6 +26,7 @@ namespace HR_Board
                 options.Password.RequireNonAlphanumeric = true; // Wymagany znak specjalny
                 options.Password.RequiredLength = 8; // Minimalna długość: 8 znaków
             })
+                .AddEntityFrameworkStores<HR_BoardDbContext>()
                 .AddDefaultTokenProviders();
 
 
@@ -54,6 +57,7 @@ namespace HR_Board
             app.UseAuthentication();
             app.UseAuthorization();
 
+            
 
             app.MapControllers();
 
