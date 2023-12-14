@@ -31,7 +31,7 @@ namespace HR_Board.Data
 
             foreach (var entity in entities)
             {
-               baseEntity.UpdatedAt = DateTime.UtcNow;
+               ((BaseEntity)entity.Entity).UpdatedAt = DateTime.UtcNow;
             }
         }
     }
