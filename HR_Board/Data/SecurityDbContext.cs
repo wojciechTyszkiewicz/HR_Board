@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HR_Board.Data
 {
-    public class AppDbContext : IdentityDbContext<ApiUser>
+    public class SecurityDbContext : IdentityDbContext<ApiUser>
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        public SecurityDbContext(DbContextOptions<SecurityDbContext> options) : base(options)
         {
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
