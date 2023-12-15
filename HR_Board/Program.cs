@@ -19,9 +19,6 @@ namespace HR_Board
             options.UseSqlServer(builder.Configuration.GetConnectionString("DbConnection")));
 
 
-
-
-
             // Konfiguracja Identity
             builder.Services.AddIdentity<ApiUser, IdentityRole>(options =>
             {
@@ -55,6 +52,7 @@ namespace HR_Board
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
 
             app.UseHttpsRedirection();
 
