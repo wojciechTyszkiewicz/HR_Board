@@ -11,18 +11,15 @@ namespace HR_Board.Controllers
     {
         private readonly ILogger<UsersController> _logger;
         private readonly UserManager<ApiUser> _userManager;
-        private readonly IUserStore<ApiUser> _store;
         private readonly SignInManager<ApiUser> _signInManager;
 
         public UsersController(
             ILogger<UsersController> logger,
             UserManager<ApiUser> userManager, 
-            IUserStore<ApiUser> store, 
             SignInManager<ApiUser> signInManager)
         {
             _logger = logger;
             _userManager = userManager;
-            _store = store;
             _signInManager = signInManager;
         }
 
