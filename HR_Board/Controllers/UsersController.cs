@@ -63,13 +63,13 @@ namespace HR_Board.Controllers
         }
 
 
-        [Authorize]
+/*        [Authorize]
         [HttpGet("/Logout", Name = "Logout")]
         public async Task<ActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out succesfully.");
             return Ok("signed out");
-        }
+        }*/
     }
 }
