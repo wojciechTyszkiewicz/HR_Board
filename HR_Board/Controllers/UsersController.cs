@@ -24,15 +24,6 @@ namespace HR_Board.Controllers
         }
 
 
-        [Authorize]
-        [HttpGet("GetUserClaims", Name = "GetUserClaims")]
-        public IEnumerable<string> Get()
-        {
-            var claims = User.Claims.Select(x => $"{x.Type} -> {x.Value}").ToArray();
-            _logger.LogInformation("Retrieved {ClaimCount} claims for curent user.", claims.Length);
-            return claims;
-        }
-
 
         [Authorize]
         [HttpGet("GetUser/{email}", Name = "GetUser")]
