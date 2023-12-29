@@ -8,7 +8,7 @@ namespace HR_Board.Data
         public SecurityDbContext(DbContextOptions<SecurityDbContext> options) : base(options)
         {
         }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+       /* protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
@@ -34,6 +34,6 @@ namespace HR_Board.Data
             {
                ((BaseEntity)entity.Entity).UpdatedAt = DateTime.UtcNow;
             }
-        }
+        }*/
     }
 }
