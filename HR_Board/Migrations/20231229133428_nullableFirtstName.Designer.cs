@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace HR_Board.Migrations
 {
-    [DbContext(typeof(SecurityDbContext))]
+    [DbContext(typeof(AppDbContext))]
     [Migration("20231229133428_nullableFirtstName")]
     partial class nullableFirtstName
     {

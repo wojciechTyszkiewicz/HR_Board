@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace HR_Board.Data
 {
-    public class SecurityDbContext : IdentityDbContext<ApiUser>
+    public class AppDbContext : IdentityDbContext<ApiUser, IdentityRole<Guid>, Guid>
     {
-        public SecurityDbContext(DbContextOptions<SecurityDbContext> options) : base(options)
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
        /* protected override void OnModelCreating(ModelBuilder modelBuilder)
