@@ -25,7 +25,17 @@ namespace HR_Board
 
             // Konfiguracja Identity
 
-            builder.Services.AddIdentity<ApiUser, IdentityRole>(options =>
+            builder.Services.AddIdentityApiEndpoints<ApiUser>(options =>
+            {
+                options.Password.RequireLowercase = true; // Wymagana mała litera
+                options.Password.RequireUppercase = true; // Wymagana duża litera
+                options.Password.RequireDigit = true; // Wymagana cyfra
+                options.Password.RequireNonAlphanumeric = true; // Wymagany znak specjalny
+                options.Password.RequiredLength = 8; // Minimalna długość: 8 znaków
+
+            }).AddEntityFrameworkStores<AppDbContext>();
+
+            /*            builder.Services.AddIdentity<ApiUser, IdentityRole>(options =>
             {
                 options.Password.RequireLowercase = true; // Wymagana mała litera
                 options.Password.RequireUppercase = true; // Wymagana duża litera
@@ -33,7 +43,7 @@ namespace HR_Board
                 options.Password.RequireNonAlphanumeric = true; // Wymagany znak specjalny
                 options.Password.RequiredLength = 8; // Minimalna długość: 8 znaków
             })
-                .AddDefaultTokenProviders();
+                .AddDefaultTokenProviders();*/
 
 
             builder.Services.AddControllers();
