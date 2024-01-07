@@ -85,8 +85,6 @@ namespace HR_Board
                 app.UseSwaggerUI();
             }
 
-            app.MapIdentityApi<ApiUser>();
-
             app.UseHttpsRedirection();
 
             app.UseAuthentication();
