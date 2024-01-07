@@ -43,7 +43,7 @@ namespace HR_Board
                 options.Password.RequireNonAlphanumeric = true; // Wymagany znak specjalny
                 options.Password.RequiredLength = 8; // Minimalna długość: 8 znaków
             })
-                .AddDefaultTokenProviders();*/
+                .AddDefaultTokenProviders().AddEntityFrameworkStores<AppDbContext>();
 
 
             builder.Services.AddControllers();
