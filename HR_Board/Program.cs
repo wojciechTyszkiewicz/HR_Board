@@ -35,7 +35,7 @@ namespace HR_Board
 
             }).AddEntityFrameworkStores<AppDbContext>();*/
 
-            builder.Services.AddIdentity<ApiUser, IdentityRole>(options =>
+            builder.Services.AddIdentity<ApiUser, IdentityRole<Guid>>(options =>
             {
                 options.Password.RequireLowercase = true; // Wymagana mała litera
                 options.Password.RequireUppercase = true; // Wymagana duża litera
