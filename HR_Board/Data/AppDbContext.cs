@@ -1,8 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace HR_Board.Data
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<ApiUser, IdentityRole<Guid>, Guid>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -31,7 +33,7 @@ namespace HR_Board.Data
 
             foreach (var entity in entities)
             {
-               baseEntity.UpdatedAt = DateTime.UtcNow;
+                ((BaseEntity)entity.Entity).UpdatedAt = DateTime.UtcNow;
             }
         }
     }
