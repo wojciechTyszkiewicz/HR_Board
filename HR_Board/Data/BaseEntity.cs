@@ -1,10 +1,10 @@
 ﻿using HR_Board.Data.Interfaces;
+using Microsoft.AspNetCore.Identity;
 
 namespace HR_Board.Data
 {
-    public abstract class BaseEntity : IBaseEntity
+    public abstract class BaseEntity : IdentityUser<Guid>, IBaseEntity
     {
-        public Guid Id { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
 

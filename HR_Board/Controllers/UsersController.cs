@@ -23,6 +23,26 @@ namespace HR_Board.Controllers
             _signInManager = signInManager;
         }
 
+        [HttpPost("Register", Name = "RegisterUser")]
+        public async Task<IActionResult> Register([FromBody] RegisterModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new ApiUser { UserName = model.Email, Email = model.Email };
+                var result = await _userManager.CreateAsync(user, model.Password);
+
+                if (result.Succeeded)
+                {
+                    _logger.LogInformation("User created a new account with password.");
+                    return Ok(result);
+                }
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+            return BadRequest(ModelState);
+        }
 
 
         [Authorize]

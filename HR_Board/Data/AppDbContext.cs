@@ -9,7 +9,7 @@ namespace HR_Board.Data
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+/*        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
@@ -18,7 +18,7 @@ namespace HR_Board.Data
                 .Property(b => b.Id)
                 .IsRequired()
                 .ValueGeneratedOnAdd();
-        }
+        }*/
 
         public override int SaveChanges()
         {
