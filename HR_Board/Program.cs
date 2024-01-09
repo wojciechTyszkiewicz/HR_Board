@@ -76,6 +76,10 @@ namespace HR_Board
                 opt.OperationFilter<AuthorizeCheckOperationFilter>();
             });
 
+            // Healthcheck registration
+            builder.Services.AddHealthChecks();
+
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -90,6 +94,7 @@ namespace HR_Board
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.MapHealthChecks("/healthz");
             
 
             app.MapControllers();
