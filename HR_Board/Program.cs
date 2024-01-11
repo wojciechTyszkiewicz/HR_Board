@@ -1,5 +1,7 @@
-﻿using HR_Board.Data;
+﻿using HealthChecks.UI.Client;
+using HR_Board.Data;
 using HR_Board.Utils;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
@@ -77,7 +79,8 @@ namespace HR_Board
             });
 
             // Healthcheck registration
-            builder.Services.AddHealthChecks();
+            builder.Services.AddHealthChecks()
+                .AddDbContextCheck<AppDbContext>();
 
 
             var app = builder.Build();
@@ -94,7 +97,13 @@ namespace HR_Board
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.MapHealthChecks("/healthz");
+            app.MapHealthChecks(
+                "/health",
+                new HealthCheckOptions
+                {
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                }
+                );
             
 
             app.MapControllers();
