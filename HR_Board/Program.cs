@@ -41,7 +41,7 @@ namespace HR_Board
 
             }).AddEntityFrameworkStores<AppDbContext>();*/
 
-            builder.Services.AddScoped<JWTTokenService>();
+            builder.Services.AddScoped<JWTTokenService, JWTTokenService>();
             builder.Services.AddIdentity<ApiUser, IdentityRole<Guid>>(options =>
             {
                 options.Password.RequireLowercase = true; // Wymagana mała litera
