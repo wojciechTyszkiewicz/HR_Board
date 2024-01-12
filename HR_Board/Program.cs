@@ -1,12 +1,16 @@
 ﻿using HR_Board.Data;
+using HR_Board.Services;
 using HR_Board.Utils;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
 
 namespace HR_Board
 {
@@ -17,10 +21,12 @@ namespace HR_Board
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
             // Add DbContext
             var dbConnectionString = builder.Configuration.GetConnectionString("DbConnection");
+            var symmetricSecurityKey = builder.Configuration.GetValue<string>("JwtTokenSettings:SymmetricSecurityKey");
+
             builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(dbConnectionString)); ;
+
 
 
             // Konfiguracja Identity
@@ -35,6 +41,7 @@ namespace HR_Board
 
             }).AddEntityFrameworkStores<AppDbContext>();*/
 
+            builder.Services.AddScoped<JWTTokenService>();
             builder.Services.AddIdentity<ApiUser, IdentityRole<Guid>>(options =>
             {
                 options.Password.RequireLowercase = true; // Wymagana mała litera
@@ -45,11 +52,9 @@ namespace HR_Board
             })
                 .AddDefaultTokenProviders().AddEntityFrameworkStores<AppDbContext>();
 
-
             builder.Services.AddControllers();
 
             builder.Services.AddEndpointsApiExplorer();
-
 
             builder.Services.AddApiVersioning(o =>
             {
@@ -58,7 +63,20 @@ namespace HR_Board
                 o.ReportApiVersions = true;
             });
 
+
             builder.Services.AddAuthorization();
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(symmetricSecurityKey)),
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        // Ustaw czas życia tokenu na 3 dni
+                        ClockSkew = TimeSpan.FromDays(3)
+                    });
+        
 
             //Swager configuration
             builder.Services.AddSwaggerGen(opt =>
@@ -86,14 +104,12 @@ namespace HR_Board
             }
 
             app.UseHttpsRedirection();
-
             app.UseAuthentication();
+
+
+
             app.UseAuthorization();
-
-            
-
             app.MapControllers();
-
             app.Run();
         }
     }
