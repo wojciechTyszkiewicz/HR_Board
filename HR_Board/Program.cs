@@ -41,7 +41,7 @@ namespace HR_Board
 
             }).AddEntityFrameworkStores<AppDbContext>();*/
 
-            builder.Services.AddScoped<JWTTokenService, JWTTokenService>();
+            builder.Services.AddScoped<JWTTokenService>();
             builder.Services.AddIdentity<ApiUser, IdentityRole<Guid>>(options =>
             {
                 options.Password.RequireLowercase = true; // Wymagana mała litera
@@ -73,8 +73,6 @@ namespace HR_Board
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(symmetricSecurityKey)),
                         ValidateIssuer = false,
                         ValidateAudience = false,
-                        // Ustaw czas życia tokenu na 3 dni
-                        ClockSkew = TimeSpan.FromDays(3)
                     });
         
 

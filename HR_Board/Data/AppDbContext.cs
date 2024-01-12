@@ -52,15 +52,14 @@ namespace HR_Board.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // Konfiguracja BaseEntity
+/*            // Konfiguracja BaseEntity
             modelBuilder.Entity<BaseEntity>(be =>
             {
                 be.HasQueryFilter(b => b.IsDeleted == false);
                 be.Property(b => b.Id).IsRequired().ValueGeneratedOnAdd();
                 be.Property(b => b.CreatedAt).IsRequired().ValueGeneratedOnAdd();
-            });
-                
-                
+            });*/
+ 
         }
     }
 }
