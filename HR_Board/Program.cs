@@ -22,7 +22,8 @@ namespace HR_Board
 
             // Add services to the container.
             // Add DbContext
-            var dbConnectionString = builder.Configuration.GetConnectionString("DbConnection");
+            /*            var dbConnectionString = builder.Configuration.GetConnectionString("DbConnection");*/
+            var dbConnectionString = builder.Configuration.GetValue<string>("DbConnection");
             var symmetricSecurityKey = builder.Configuration.GetValue<string>("JwtTokenSettings:SymmetricSecurityKey");
 
             builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(dbConnectionString)); 
