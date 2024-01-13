@@ -42,6 +42,7 @@ namespace HR_Board
             }).AddEntityFrameworkStores<AppDbContext>();*/
 
             builder.Services.AddScoped<JWTTokenService>();
+
             builder.Services.AddIdentity<ApiUser, IdentityRole<Guid>>(options =>
             {
                 options.Password.RequireLowercase = true; // Wymagana mała litera
@@ -50,7 +51,7 @@ namespace HR_Board
                 options.Password.RequireNonAlphanumeric = true; // Wymagany znak specjalny
                 options.Password.RequiredLength = 8; // Minimalna długość: 8 znaków
             })
-                .AddDefaultTokenProviders().AddEntityFrameworkStores<AppDbContext>().AddApiEndpoints();
+                .AddDefaultTokenProviders().AddEntityFrameworkStores<AppDbContext>();
 
             builder.Services.AddControllers();
 
