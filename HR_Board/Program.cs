@@ -25,7 +25,7 @@ namespace HR_Board
             var dbConnectionString = builder.Configuration.GetConnectionString("DbConnection");
             var symmetricSecurityKey = builder.Configuration.GetValue<string>("JwtTokenSettings:SymmetricSecurityKey");
 
-            builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(dbConnectionString)); ;
+            builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(dbConnectionString)); 
 
 
 
@@ -50,7 +50,7 @@ namespace HR_Board
                 options.Password.RequireNonAlphanumeric = true; // Wymagany znak specjalny
                 options.Password.RequiredLength = 8; // Minimalna długość: 8 znaków
             })
-                .AddDefaultTokenProviders().AddEntityFrameworkStores<AppDbContext>();
+                .AddDefaultTokenProviders().AddEntityFrameworkStores<AppDbContext>().AddApiEndpoints();
 
             builder.Services.AddControllers();
 
@@ -73,8 +73,6 @@ namespace HR_Board
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(symmetricSecurityKey)),
                         ValidateIssuer = false,
                         ValidateAudience = false,
-                        // Ustaw czas życia tokenu na 3 dni
-                        ClockSkew = TimeSpan.FromDays(3)
                     });
         
 

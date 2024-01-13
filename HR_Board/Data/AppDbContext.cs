@@ -48,7 +48,7 @@ namespace HR_Board.Data
             }
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+/*        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
@@ -61,6 +61,6 @@ namespace HR_Board.Data
             });
                 
                 
-        }
+        }*/
     }
 }
