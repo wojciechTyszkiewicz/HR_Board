@@ -1,4 +1,6 @@
-﻿using HR_Board.Data;
+﻿using HR_Board.Config;
+using HR_Board.Data;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -9,20 +11,18 @@ namespace HR_Board.Services
 {
     public class JWTTokenService
     {
-        private readonly IConfiguration _configuration;
+        private readonly JwtTokenSettings _jwtTokenSettings;
 
-        public JWTTokenService(IConfiguration configuration)
+        public JWTTokenService(IOptions<JwtTokenSettings> jwtTokenSettings)
         {
-            _configuration = configuration;
+            _jwtTokenSettings = jwtTokenSettings.Value;
         }
-
 
         public string GenerateJwtToken(ApiUser user)
         {
 
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetValue<string>("JwtTokenSettings:SymmetricSecurityKey")));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtTokenSettings.SymmetricSecurityKey));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
 
             var token = new JwtSecurityToken(
                 issuer: null,
@@ -36,18 +36,16 @@ namespace HR_Board.Services
 
         private List<Claim> CreateClaims(ApiUser user)
         {
-            var jwtSub = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("JwtTokenSettings")["JwtRegisteredClaimNamesSub"];
-
             try
             {
                 var claims = new List<Claim>
                 {
-                    new Claim(JwtRegisteredClaimNames.Sub, jwtSub),
+                    new Claim(JwtRegisteredClaimNames.Sub, _jwtTokenSettings.JwtRegisteredClaimNamesSub),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString()),
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ClaimTypes.Name, user.UserName ?? "Unknown"),
+                    new Claim(ClaimTypes.Email, user.Email!),
                 };
                 return claims;
             }

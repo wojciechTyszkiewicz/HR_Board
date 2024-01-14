@@ -1,9 +1,11 @@
 ﻿using HR_Board.Data;
 using HR_Board.ModelDTO;
 using HR_Board.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace HR_Board.Controllers
 {
@@ -37,7 +39,7 @@ namespace HR_Board.Controllers
 
             if (result.Succeeded)
             {
-                request.Password = "";
+                request.Password = "***";
                 return CreatedAtAction(nameof(Register), new { email = request.Email }, request);
             }
 
@@ -77,7 +79,8 @@ namespace HR_Board.Controllers
             }
 
             var accessToken = _tokenService.GenerateJwtToken(userInDb);
-            await _appDbContext.SaveChangesAsync();
+
+            // is there wa way to pass it to _userManager, _appDbContext.UserTokens ??
 
             return Ok(new AuthResponseDTO
             {
@@ -86,5 +89,33 @@ namespace HR_Board.Controllers
                 Token = accessToken,
             });
         }
+
+       /* [Authorize(AuthenticationSchemes = "Bearer")]
+        [HttpGet]
+        [Route("test")]
+        public async Task<IActionResult> Test()
+        {
+
+            var identity = User.Identity as ClaimsIdentity;
+
+            if (identity != null)
+            {
+                // Extract claims
+                IEnumerable<Claim> claims = identity.Claims;
+
+                // Get specific claim values (e.g., user ID, username)
+                var userId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                var username = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+
+                var email = claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+
+                var user = await _userManager.FindByEmailAsync(email);
+                // Use this information as needed
+                // ...
+
+                return Ok($"User ID: {userId}, Username: {username}, email: {email} --- {user.CreatedAt}");
+            }
+            return Ok("ok");
+        }*/
     }
 }
