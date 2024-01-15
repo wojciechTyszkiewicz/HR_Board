@@ -17,6 +17,7 @@ namespace HR_Board.Data.DataBaseConfig
                 .HasConversion(new EnumToStringConverter<MeetingType>());
 
 
+                
         }
     }
 
