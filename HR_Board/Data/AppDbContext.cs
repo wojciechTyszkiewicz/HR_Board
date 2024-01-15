@@ -1,4 +1,5 @@
-﻿using HR_Board.Data.Interfaces;
+﻿using HR_Board.Data.Entities;
+using HR_Board.Data.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -9,12 +10,26 @@ namespace HR_Board.Data
 {
     public class AppDbContext : IdentityDbContext<ApiUser, IdentityRole<Guid>, Guid>
     {
+
+        public DbSet<Job> Jobs { get; set; }
+        public DbSet<Meeting> Meetings { get; set; }
+
+
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
             SavingChanges += AppDbContext_SavingChanges;
             SavingChanges += AppDbContext_SavedChanges;
             SaveChangesFailed += AppDbContext_SaveChangesFailed;
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
+        }
+
+
 
         private void AppDbContext_SaveChangesFailed(object sender, SaveChangesFailedEventArgs e)
         {
@@ -49,11 +64,5 @@ namespace HR_Board.Data
             }
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-
-        }
     }
 }
