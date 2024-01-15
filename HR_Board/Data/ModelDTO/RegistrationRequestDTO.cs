@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace HR_Board.ModelDTO
+namespace HR_Board.Data.ModelDTO
 {
     public class RegistrationRequestDTO
     {
@@ -10,7 +10,7 @@ namespace HR_Board.ModelDTO
         [Required]
         public string Username { get; set; }
 
-        [Required]  
+        [Required]
         public string Password { get; set; }
 
     }

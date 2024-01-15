@@ -1,5 +1,5 @@
 ﻿using HR_Board.Data;
-using HR_Board.ModelDTO;
+using HR_Board.Data.ModelDTO;
 using HR_Board.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
