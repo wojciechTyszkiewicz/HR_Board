@@ -1,75 +1,121 @@
 ﻿using HR_Board.Data;
+using HR_Board.ModelDTO;
+using HR_Board.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace HR_Board.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
-    public class UsersController :ControllerBase
+    [Route("/api/[controller]")]
+
+    public class UsersController : ControllerBase
     {
-        private readonly ILogger<UsersController> _logger;
         private readonly UserManager<ApiUser> _userManager;
-        private readonly SignInManager<ApiUser> _signInManager;
-
-        public UsersController(
-            ILogger<UsersController> logger,
-            UserManager<ApiUser> userManager, 
-            SignInManager<ApiUser> signInManager)
+        private readonly AppDbContext _appDbContext;
+        private readonly JWTTokenService _tokenService;
+        public UsersController(UserManager<ApiUser> userManager, AppDbContext context, JWTTokenService tokenService)
         {
-            _logger = logger;
             _userManager = userManager;
-            _signInManager = signInManager;
+            _appDbContext = context;
+            _tokenService = tokenService;
         }
 
-
-
-        [Authorize]
-        [HttpGet("GetUser/{email}", Name = "GetUser")]
-        public async Task<ApiUser?> GetUser(string email)
+        [HttpPost]
+        [Route("register")]
+        public async Task<IActionResult> Register(RegistrationRequestDTO request)
         {
-            _logger.LogInformation("Attempting to retrieve user with email: {Email}", email);
-            var user = await _userManager.FindByEmailAsync(email);
-            if (user == null)
+            if (!ModelState.IsValid)
             {
-                _logger.LogWarning("User not found with email: {Email}", email);
+                return BadRequest(ModelState);
             }
-            return user;
+
+            var result = await _userManager.CreateAsync(
+                new ApiUser { UserName = request.Username, Email = request.Email },
+                request.Password);
+
+            if (result.Succeeded)
+            {
+                request.Password = "***";
+                return CreatedAtAction(nameof(Register), new { email = request.Email }, request);
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(error.Code, error.Description);
+            }
+            return BadRequest(ModelState);
+
         }
 
-
-        [Authorize]
-        [HttpPost("DeleteUser/{email}", Name = "DeleteUser")]
-        public async Task<IdentityResult?> DeleteUser(string email)
+        [HttpPost]
+        [Route("login")]
+        public async Task<ActionResult<AuthResponseDTO>> Authenticate([FromBody] AuthRequestDTO request)
         {
-            var user = await _userManager.FindByEmailAsync(email);
-            if(user == null)
+            if (!ModelState.IsValid)
             {
-                _logger.LogWarning("Attempted to delete non-existing user with e-mail: {Email}", email);
-                return null;
+                return BadRequest(ModelState);
             }
 
-            var result = await _userManager.DeleteAsync(user);
-            if(result.Succeeded)
+            var managedUser = await _userManager.FindByEmailAsync(request.Email);
+            if (managedUser == null)
             {
-                _logger.LogInformation("User with email: {Email} deleted succesfully.", email);
+                return BadRequest("Bad credentials");
             }
-            else
+
+            var isPasswordValid = await _userManager.CheckPasswordAsync(managedUser, request.Password);
+            if (!isPasswordValid)
             {
-                _logger.LogError("Error occured while deleting user with email: {Email}", email);
+                return BadRequest("Bad credentials");
             }
-            return result;
+
+            var userInDb = _appDbContext.Users.FirstOrDefault(u => u.Email == request.Email);
+            if (userInDb is null)
+            {
+                return Unauthorized();
+            }
+
+            var accessToken = _tokenService.GenerateJwtToken(userInDb);
+
+            // is there wa way to pass it to _userManager, _appDbContext.UserTokens ??
+
+            return Ok(new AuthResponseDTO
+            {
+                UserName = userInDb.UserName,
+                Email = userInDb.Email,
+                Token = accessToken,
+            });
         }
 
-
-/*        [Authorize]
-        [HttpGet("/Logout", Name = "Logout")]
-        public async Task<ActionResult> Logout()
+       /* [Authorize(AuthenticationSchemes = "Bearer")]
+        [HttpGet]
+        [Route("test")]
+        public async Task<IActionResult> Test()
         {
-            await _signInManager.SignOutAsync();
-            _logger.LogInformation("User logged out succesfully.");
-            return Ok("signed out");
+
+            var identity = User.Identity as ClaimsIdentity;
+
+            if (identity != null)
+            {
+                // Extract claims
+                IEnumerable<Claim> claims = identity.Claims;
+
+                // Get specific claim values (e.g., user ID, username)
+                var userId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                var username = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+
+                var email = claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+
+                var user = await _userManager.FindByEmailAsync(email);
+                // Use this information as needed
+                // ...
+
+                return Ok($"User ID: {userId}, Username: {username}, email: {email} --- {user.CreatedAt}");
+            }
+            return Ok("ok");
         }*/
     }
 }
