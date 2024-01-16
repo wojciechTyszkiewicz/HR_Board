@@ -34,7 +34,7 @@ namespace HR_Board.Controllers
             }
 
             var result = await _userManager.CreateAsync(
-                new ApiUser { UserName = request.Username, Email = request.Email },
+                new ApiUser { UserName = request.Password, Email = request.Email },
                 request.Password);
 
             if (result.Succeeded)
