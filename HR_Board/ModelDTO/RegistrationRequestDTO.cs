@@ -4,7 +4,7 @@ namespace HR_Board.ModelDTO
 {
     public class RegistrationRequestDTO
     {
-        []
+        [Required]
         public string FirstName { get; set; }
 
         [Required]

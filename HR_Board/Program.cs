@@ -25,6 +25,7 @@ namespace HR_Board
             // Konfiguracja Identity
 
             builder.Services.AddScoped<JWTTokenService>();
+            builder.Services.AddScoped<UserService>();
 
             builder.Services.AddIdentity<ApiUser, IdentityRole<Guid>>(options =>
             {
