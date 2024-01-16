@@ -1,7 +1,9 @@
-﻿using HR_Board.Config;
+﻿using HealthChecks.UI.Client;
+using HR_Board.Config;
 using HR_Board.Data;
 using HR_Board.Services;
 using HR_Board.Utils;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -80,6 +82,11 @@ namespace HR_Board
                 opt.OperationFilter<AuthorizeCheckOperationFilter>();
             });
 
+            // Healthcheck registration
+            builder.Services.AddHealthChecks()
+                .AddDbContextCheck<AppDbContext>();
+
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -91,6 +98,16 @@ namespace HR_Board
 
             app.UseHttpsRedirection();;
             app.UseAuthorization();
+
+            app.MapHealthChecks(
+                "/health",
+                new HealthCheckOptions
+                {
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                }
+                );
+            
+
             app.MapControllers();
             app.Run();
         }
