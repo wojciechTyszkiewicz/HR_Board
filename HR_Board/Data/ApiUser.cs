@@ -1,4 +1,5 @@
-﻿using HR_Board.Data.Interfaces;
+﻿using HR_Board.Data.Entities;
+using HR_Board.Data.Interfaces;
 using Microsoft.AspNetCore.Identity;
 
 namespace HR_Board.Data
@@ -10,5 +11,6 @@ namespace HR_Board.Data
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
+        public List<Meeting> Meetings { get; set; }
     }
 }

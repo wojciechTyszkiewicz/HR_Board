@@ -11,7 +11,9 @@ namespace HR_Board.Data.Entities
         public string MeetingAddress { get; set; }
         public string MeetingUrl { get; set; }
         public ApiUser Candidate { get; set; }
+        public Guid CandidateId { get; set; }
         public Job Job { get; set; }
+        public Guid JobId { get; set; }
 
     }
 
