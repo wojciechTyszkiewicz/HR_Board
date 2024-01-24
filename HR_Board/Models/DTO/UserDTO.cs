@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace HR_Board.ModelDTO
+namespace HR_Board.Models.DTO
 {
-    public class RegistrationResponseDTO
+    public class UserDTO
     {
         public string Id { get; set; }
         public string CreatedAt { get; set; }
@@ -10,6 +10,7 @@ namespace HR_Board.ModelDTO
         public string FirstName { get; set; }
         public string LastName { get; set; }
 
-
+        [EmailAddress]
+        public string Email { get; set; }
     }
 }

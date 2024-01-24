@@ -1,6 +1,9 @@
 ﻿using HR_Board.Data;
-using HR_Board.ModelDTO;
+using HR_Board.Mappers;
+using HR_Board.Models.DTO;
 using HR_Board.Services;
+using HR_Board.Services.Interfaces;
+using HR_Board.Services.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -17,29 +20,40 @@ namespace HR_Board.Controllers
         private readonly UserManager<ApiUser> _userManager;
         private readonly AppDbContext _appDbContext;
         private readonly JWTTokenService _tokenService;
-        public UsersController(UserManager<ApiUser> userManager, AppDbContext context, JWTTokenService tokenService)
+        private readonly IUserService _userService;
+
+        public UsersController(UserManager<ApiUser> userManager, AppDbContext context, JWTTokenService tokenService, IUserService userService)
         {
             _userManager = userManager;
             _appDbContext = context;
             _tokenService = tokenService;
+            _userService = userService;
         }
 
         [HttpPost]
         [Route("register")]
-        public async Task<IActionResult> Register(RegistrationRequestDTO request)
+        public async Task<IActionResult> Register(RegistrationRequestDTO requestDTO)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
+            RegistrationRequest request = 
+
+            var result_ = await _userService.Register( request);
+
+
+
+
+
+
+
             var result = await _userManager.CreateAsync(
-                new ApiUser { UserName = request.Password, Email = request.Email },
-                request.Password);
+                new ApiUser { UserName = request.Password, Email = request.Email });
 
             if (result.Succeeded)
             {
-                request.Password = "***";
                 return CreatedAtAction(nameof(Register), new { email = request.Email }, request);
             }
 
@@ -60,62 +74,66 @@ namespace HR_Board.Controllers
                 return BadRequest(ModelState);
             }
 
-            var managedUser = await _userManager.FindByEmailAsync(request.Email);
-            if (managedUser == null)
+            var result = await _userService.Authenticate(request.Email, request.Password);
+
+            if (result.Success && result.User != null)
             {
-                return BadRequest("Bad credentials");
+                return Ok(result.FromAuthResult());
+
             }
-
-            var isPasswordValid = await _userManager.CheckPasswordAsync(managedUser, request.Password);
-            if (!isPasswordValid)
-            {
-                return BadRequest("Bad credentials");
-            }
-
-            var userInDb = _appDbContext.Users.FirstOrDefault(u => u.Email == request.Email);
-            if (userInDb is null)
-            {
-                return Unauthorized();
-            }
-
-            var accessToken = _tokenService.GenerateJwtToken(userInDb);
-
-            // is there wa way to pass it to _userManager, _appDbContext.UserTokens ??
-
-            return Ok(new AuthResponseDTO
-            {
-                UserName = userInDb.UserName,
-                Email = userInDb.Email,
-                Token = accessToken,
-            });
+            return Unauthorized();
         }
 
-       /* [Authorize(AuthenticationSchemes = "Bearer")]
-        [HttpGet]
-        [Route("test")]
-        public async Task<IActionResult> Test()
+        /* [Authorize(AuthenticationSchemes = "Bearer")]
+         [HttpGet]
+         [Route("test")]
+         public async Task<IActionResult> Test()
+         {
+
+             var identity = User.Identity as ClaimsIdentity;
+
+             if (identity != null)
+             {
+                 // Extract claims
+                 IEnumerable<Claim> claims = identity.Claims;
+
+                 // Get specific claim values (e.g., user ID, username)
+                 var userId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                 var username = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+
+                 var email = claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+
+                 var user = await _userManager.FindByEmailAsync(email);
+                 // Use this information as needed
+                 // ...
+
+                 return Ok($"User ID: {userId}, Username: {username}, email: {email} --- {user.CreatedAt}");
+             }
+             return Ok("ok");
+         }*/
+
+        [HttpPost]
+        [Route("register")]
+        public async Task<ActionResult<RegistrationResponseDTO>> Register([FromBody] RegistrationRequestDTO model)
         {
+            
+            
+            var userExists = await _userManager.FindByEmailAsync(model.Email);
+            if (userExists != null)
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = "Użytkownik z takim adresem e-mail już istnieje!" });
 
-            var identity = User.Identity as ClaimsIdentity;
-
-            if (identity != null)
+            ApiUser user = new ApiUser()
             {
-                // Extract claims
-                IEnumerable<Claim> claims = identity.Claims;
+                Email = model.Email,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                UserName = model.Email
+            };
+            var result = await _userManager.CreateAsync(user, model.Password);
+            if (!result.Succeeded)
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = "Utworzenie użytkownika nie powiodło się! Sprawdź błędy i spróbuj ponownie." });
 
-                // Get specific claim values (e.g., user ID, username)
-                var userId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                var username = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
-
-                var email = claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
-
-                var user = await _userManager.FindByEmailAsync(email);
-                // Use this information as needed
-                // ...
-
-                return Ok($"User ID: {userId}, Username: {username}, email: {email} --- {user.CreatedAt}");
-            }
-            return Ok("ok");
-        }*/
+            return Ok(new { Status = "Success", Message = "Użytkownik został pomyślnie utworzony!" });
+        }
     }
 }
+

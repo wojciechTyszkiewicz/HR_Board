@@ -12,6 +12,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using HR_Board.Services.Interfaces;
+using HR_Board.Services.Users;
 
 namespace HR_Board
 {
@@ -28,6 +30,7 @@ namespace HR_Board
 
             builder.Services.AddScoped<JWTTokenService>();
             builder.Services.AddScoped<UserService>();
+            builder.Services.AddTransient<IUserService, UserService>();
 
             builder.Services.AddIdentity<ApiUser, IdentityRole<Guid>>(options =>
             {
