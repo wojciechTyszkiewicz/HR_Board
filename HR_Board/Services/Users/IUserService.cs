@@ -14,6 +14,6 @@ namespace HR_Board.Services.Interfaces
     {
 
         Task<AuthResult> Authenticate(string username, string password);
-        Task<RegistrationResponse> Register(RegistrationRequest response);
+        Task<RegistrationResponse> Register(string email, string password, Profile? profile);
     }
 }

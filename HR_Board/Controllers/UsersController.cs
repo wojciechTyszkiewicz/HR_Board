@@ -32,37 +32,24 @@ namespace HR_Board.Controllers
 
         [HttpPost]
         [Route("register")]
-        public async Task<IActionResult> Register(RegistrationRequestDTO requestDTO)
+        public async Task<ActionResult<RegistrationResponseDTO>> Register([FromBody] RegistrationRequestDTO requestDTO)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            RegistrationRequest request = 
-
-            var result_ = await _userService.Register( request);
+            var result = await _userService.Register(requestDTO.Email, requestDTO.Password, Dto.BuildProfile(requestDTO));
 
 
-
-
-
-
-
-            var result = await _userManager.CreateAsync(
-                new ApiUser { UserName = request.Password, Email = request.Email });
-
-            if (result.Succeeded)
+            if (result.Success)
             {
-                return CreatedAtAction(nameof(Register), new { email = request.Email }, request);
+                return Ok(Dto.From(result));
             }
-
-            foreach (var error in result.Errors)
+            else
             {
-                ModelState.AddModelError(error.Code, error.Description);
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = result.Message });
             }
-            return BadRequest(ModelState);
-
         }
 
         [HttpPost]
@@ -78,7 +65,7 @@ namespace HR_Board.Controllers
 
             if (result.Success && result.User != null)
             {
-                return Ok(result.FromAuthResult());
+                return Ok(Dto.From(result));
 
             }
             return Unauthorized();
@@ -114,7 +101,7 @@ namespace HR_Board.Controllers
 
         [HttpPost]
         [Route("register")]
-        public async Task<ActionResult<RegistrationResponseDTO>> Register([FromBody] RegistrationRequestDTO model)
+        public async Task<ActionResult<RegistrationResponseDTO>> Register1([FromBody] RegistrationRequestDTO model)
         {
             
             
@@ -134,6 +121,7 @@ namespace HR_Board.Controllers
 
             return Ok(new { Status = "Success", Message = "Użytkownik został pomyślnie utworzony!" });
         }
+
     }
 }
 

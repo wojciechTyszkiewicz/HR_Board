@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace HR_Board.Services.Users
 {
@@ -6,6 +7,7 @@ namespace HR_Board.Services.Users
     {
         public bool Success { get; set; }
         public string Message { get; set; }
+        public List<IdentityError> Errors { get; set; }
 
         public string Id { get; set; }
         public string CreatedAt { get; set; }
