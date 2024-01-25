@@ -1,10 +1,8 @@
-﻿using HR_Board.Data;
-using HR_Board.Mappers;
+﻿using HR_Board.Mappers;
 using HR_Board.Models.DTO;
-using HR_Board.Services;
 using HR_Board.Services.Interfaces;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace HR_Board.Controllers
 {
@@ -28,7 +26,7 @@ namespace HR_Board.Controllers
             {
                 return BadRequest(ModelState);
             }
-
+           
             var result = await _userService.Register(requestDTO.Email, requestDTO.Password, Dto.BuildProfile(requestDTO));
 
             if (result.Success)

@@ -1,14 +1,12 @@
 ﻿using HR_Board.Data;
-using HR_Board.Mappers;
 using HR_Board.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
-using System.Runtime;
+
 
 namespace HR_Board.Services.Users
 {
     public class UserService : IUserService
     {
-
         private readonly UserManager<ApiUser> _userManager;
         private readonly AppDbContext _appDbContext;
         private readonly JWTTokenService _tokenService;
@@ -18,7 +16,6 @@ namespace HR_Board.Services.Users
             _appDbContext = context;
             _tokenService = tokenService;
         }
-
 
         public async Task<RegistrationResponse> Register(string email, string password, Profile profile)
         {
@@ -44,17 +41,7 @@ namespace HR_Board.Services.Users
 
             if (result.Succeeded)
             {
-                return new RegistrationResponse
-                {
-                    Success = true,
-                    Message = "User account created!",
-                    Id = user.Id.ToString(),
-                    CreatedAt = user.CreatedAt.ToString(),
-                    UpdatedAt = user.UpdatedAt.ToString(),
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    Email = user.Email
-                };
+                return CreateRegistrationResponse(user, true, "User account created!");
             }
             else
             {
@@ -66,8 +53,6 @@ namespace HR_Board.Services.Users
                 return badResult;
             }
         }
-
-
 
         public async Task<AuthResult> Authenticate(string email, string password)
         {
@@ -89,7 +74,6 @@ namespace HR_Board.Services.Users
             {
                 User = managedUser
             };
-
         }
 
         public static RegistrationResponse CreateRegistrationResponse(ApiUser user, bool success, string message)
@@ -107,4 +91,6 @@ namespace HR_Board.Services.Users
                 Email = user.Email
             };
         }
+    }
+}
 
