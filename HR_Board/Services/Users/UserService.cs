@@ -44,7 +44,17 @@ namespace HR_Board.Services.Users
 
             if (result.Succeeded)
             {
-                return CreateRegistrationResponse(user, true, "User account created!");
+                return new RegistrationResponse
+                {
+                    Success = true,
+                    Message = "User account created!",
+                    Id = user.Id.ToString(),
+                    CreatedAt = user.CreatedAt.ToString(),
+                    UpdatedAt = user.UpdatedAt.ToString(),
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email
+                };
             }
             else
             {
@@ -82,20 +92,6 @@ namespace HR_Board.Services.Users
 
         }
 
-
-/*        public  ApiUser CreateUser(string email, string password, Profile profile)
-        {
-            return new ApiUser
-            {
-                Email = email,
-                PasswordHash = password,
-                FirstName = profile.FirstName,
-                LastName = profile.LastName,
-                UserName = email
-            };
-        }*/
-
-
         public static RegistrationResponse CreateRegistrationResponse(ApiUser user, bool success, string message)
         {
 
@@ -112,57 +108,3 @@ namespace HR_Board.Services.Users
             };
         }
 
-
-
-
-/*        public async Task<RegistrationResponse> Register(string email, string password, Profile profile)
-        {
-            var existingUser = await _userManager.FindByNameAsync(email);
-            if (existingUser != null)
-            {
-                return new RegistrationResponse
-                {
-                    Success = false,
-                    Message = "User with a given email address already exists"
-                };
-            }
-            var user = new ApiUser
-            {
-                Email = email,
-                PasswordHash = password,
-                FirstName = profile.FirstName,
-                LastName = profile.LastName
-            };
-
-            var result = await _userManager.CreateAsync(user);
-
-            if (result.Succeeded)
-            {
-                return new RegistrationResponse
-                {
-                    Success = true,
-                    Message = "User account created!",
-                    Id = user.Id.ToString(),
-                    CreatedAt = user.CreatedAt.ToString(),
-                    UpdatedAt = user.UpdatedAt.ToString(),
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    Email = user.Email
-                };
-            }
-            else
-            {
-                foreach (var error in result.Errors)
-                {
-
-                }
-                return new RegistrationResponse
-                {
-                    Success = false,
-
-                };
-            }
-
-        }*/
-    }
-}
