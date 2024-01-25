@@ -3,12 +3,8 @@ using HR_Board.Mappers;
 using HR_Board.Models.DTO;
 using HR_Board.Services;
 using HR_Board.Services.Interfaces;
-using HR_Board.Services.Users;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace HR_Board.Controllers
 {
@@ -17,16 +13,10 @@ namespace HR_Board.Controllers
 
     public class UsersController : ControllerBase
     {
-        private readonly UserManager<ApiUser> _userManager;
-        private readonly AppDbContext _appDbContext;
-        private readonly JWTTokenService _tokenService;
         private readonly IUserService _userService;
 
-        public UsersController(UserManager<ApiUser> userManager, AppDbContext context, JWTTokenService tokenService, IUserService userService)
+        public UsersController(IUserService userService)
         {
-            _userManager = userManager;
-            _appDbContext = context;
-            _tokenService = tokenService;
             _userService = userService;
         }
 
@@ -98,7 +88,7 @@ namespace HR_Board.Controllers
              }
              return Ok("ok");
          }*/
-
+/*
         [HttpPost]
         [Route("register")]
         public async Task<ActionResult<RegistrationResponseDTO>> Register1([FromBody] RegistrationRequestDTO model)
@@ -120,7 +110,7 @@ namespace HR_Board.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = "Utworzenie użytkownika nie powiodło się! Sprawdź błędy i spróbuj ponownie." });
 
             return Ok(new { Status = "Success", Message = "Użytkownik został pomyślnie utworzony!" });
-        }
+        }*/
 
     }
 }
