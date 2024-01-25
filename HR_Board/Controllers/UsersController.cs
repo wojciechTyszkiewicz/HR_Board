@@ -31,7 +31,6 @@ namespace HR_Board.Controllers
 
             var result = await _userService.Register(requestDTO.Email, requestDTO.Password, Dto.BuildProfile(requestDTO));
 
-
             if (result.Success)
             {
                 return Ok(Dto.From(result));
@@ -41,6 +40,7 @@ namespace HR_Board.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = result.Message });
             }
         }
+
 
         [HttpPost]
         [Route("login")]

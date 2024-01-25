@@ -48,23 +48,6 @@ namespace HR_Board.Mappers
                 Token = result.Token
             };
         }
-
-        public static RegistrationResponse CreateRegistrationResponse(ApiUser user, bool success, string message)
-        {
-
-            return new RegistrationResponse
-            {
-                Success = success,
-                Message = message,
-                Id = user.Id.ToString(),
-                CreatedAt = user.CreatedAt.ToString(),
-                UpdatedAt = user.UpdatedAt.ToString(),
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email
-            };
-        }
-
     }
 }
 

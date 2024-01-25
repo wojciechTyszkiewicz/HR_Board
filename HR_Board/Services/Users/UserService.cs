@@ -32,17 +32,23 @@ namespace HR_Board.Services.Users
                 };
             }
 
-            var user = CreateUser(email, password, profile);
-            var result = await _userManager.CreateAsync(user);
+            var user = new ApiUser
+            {
+                Email = email,
+                FirstName = profile.FirstName,
+                LastName = profile.LastName,
+                UserName = email
+            };
+
+            var result = await _userManager.CreateAsync(user, password);
 
             if (result.Succeeded)
             {
-                return Dto.CreateRegistrationResponse(user, true, "User account created!");
+                return CreateRegistrationResponse(user, true, "User account created!");
             }
             else
             {
-
-                var badResult = Dto.CreateRegistrationResponse(user, false, "");
+                var badResult = CreateRegistrationResponse(user, false, "");
                 foreach (var error in result.Errors)
                 {
                     badResult.Errors.Add(error);
@@ -77,24 +83,39 @@ namespace HR_Board.Services.Users
         }
 
 
-        public  ApiUser CreateUser(string email, string password, Profile profile)
+/*        public  ApiUser CreateUser(string email, string password, Profile profile)
         {
             return new ApiUser
             {
                 Email = email,
                 PasswordHash = password,
                 FirstName = profile.FirstName,
-                LastName = profile.LastName
+                LastName = profile.LastName,
+                UserName = email
+            };
+        }*/
+
+
+        public static RegistrationResponse CreateRegistrationResponse(ApiUser user, bool success, string message)
+        {
+
+            return new RegistrationResponse
+            {
+                Success = success,
+                Message = message,
+                Id = user.Id.ToString(),
+                CreatedAt = user.CreatedAt.ToString(),
+                UpdatedAt = user.UpdatedAt.ToString(),
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email
             };
         }
 
 
 
 
-
-
-
-        /*        public async Task<RegistrationResponse> Register(string email, string password, Profile profile)
+/*        public async Task<RegistrationResponse> Register(string email, string password, Profile profile)
         {
             var existingUser = await _userManager.FindByNameAsync(email);
             if (existingUser != null)
@@ -103,7 +124,7 @@ namespace HR_Board.Services.Users
                 {
                     Success = false,
                     Message = "User with a given email address already exists"
-                }; 
+                };
             }
             var user = new ApiUser
             {
@@ -141,7 +162,7 @@ namespace HR_Board.Services.Users
 
                 };
             }
-                
+
         }*/
     }
 }
