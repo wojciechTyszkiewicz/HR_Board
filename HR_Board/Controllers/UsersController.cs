@@ -86,29 +86,6 @@ namespace HR_Board.Controllers
              }
              return Ok("ok");
          }*/
-/*
-        [HttpPost]
-        [Route("register")]
-        public async Task<ActionResult<RegistrationResponseDTO>> Register1([FromBody] RegistrationRequestDTO model)
-        {
-            
-            
-            var userExists = await _userManager.FindByEmailAsync(model.Email);
-            if (userExists != null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = "Użytkownik z takim adresem e-mail już istnieje!" });
-
-            ApiUser user = new ApiUser()
-            {
-                Email = model.Email,
-                SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = model.Email
-            };
-            var result = await _userManager.CreateAsync(user, model.Password);
-            if (!result.Succeeded)
-                return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = "Utworzenie użytkownika nie powiodło się! Sprawdź błędy i spróbuj ponownie." });
-
-            return Ok(new { Status = "Success", Message = "Użytkownik został pomyślnie utworzony!" });
-        }*/
 
     }
 }

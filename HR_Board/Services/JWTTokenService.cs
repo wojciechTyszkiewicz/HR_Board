@@ -36,9 +36,8 @@ namespace HR_Board.Services
 
         private List<Claim> CreateClaims(ApiUser user)
         {
-            try
-            {
-                var claims = new List<Claim>
+
+            var claims = new List<Claim>
                 {
 /*                    new Claim(JwtRegisteredClaimNames.Sub, _jwtTokenSettings.JwtRegisteredClaimNamesSub),*/
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
@@ -47,13 +46,9 @@ namespace HR_Board.Services
                     new Claim(ClaimTypes.Name, user.UserName),
                     new Claim(ClaimTypes.Email, user.Email!),
                 };
-                return claims;
-            }
-            catch ( Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+            return claims;
         }
+
     }
 }
+

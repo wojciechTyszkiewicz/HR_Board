@@ -43,6 +43,7 @@ namespace HR_Board
             .AddDefaultTokenProviders().AddEntityFrameworkStores<AppDbContext>();
 
             builder.Services.AddControllers();
+            builder.Services.AddProblemDetails();
 
             builder.Services.AddEndpointsApiExplorer();
 
@@ -92,13 +93,14 @@ namespace HR_Board
 
             var app = builder.Build();
 
+            app.UseExceptionHandler();
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            
             app.UseHttpsRedirection();;
             app.UseAuthorization();
 
