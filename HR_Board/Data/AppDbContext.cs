@@ -29,8 +29,6 @@ namespace HR_Board.Data
 
         }
 
-
-
         private void AppDbContext_SaveChangesFailed(object sender, SaveChangesFailedEventArgs e)
         {
             ChangeTracker.AutoDetectChangesEnabled = true;

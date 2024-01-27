@@ -3,7 +3,7 @@
 
     public enum MeetingType
     {
-        offline,
-        online
+        Offline,
+        Online
     }
 }
