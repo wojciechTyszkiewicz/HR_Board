@@ -20,7 +20,7 @@ namespace HR_Board.Controllers
 
         [HttpPost]
         [Route("register")]
-        public async Task<ActionResult<RegistrationResponseDTO>> Register([FromBody] RegistrationRequestDTO requestDTO)
+        public async Task<IActionResult> Register([FromBody] RegistrationRequestDTO requestDTO)
         {
             if (!ModelState.IsValid)
             {
