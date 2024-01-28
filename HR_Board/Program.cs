@@ -39,6 +39,7 @@ namespace HR_Board
                 options.Password.RequireDigit = true; // Wymagana cyfra
                 options.Password.RequireNonAlphanumeric = true; // Wymagany znak specjalny
                 options.Password.RequiredLength = 8; // Minimalna długość: 8 znaków
+                options.User.RequireUniqueEmail = true;
             })
             .AddDefaultTokenProviders().AddEntityFrameworkStores<AppDbContext>();
 

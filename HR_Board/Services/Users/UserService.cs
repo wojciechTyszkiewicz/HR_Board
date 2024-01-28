@@ -19,16 +19,6 @@ namespace HR_Board.Services.Users
 
         public async Task<RegistrationResponse> Register(string email, string password, Profile profile)
         {
-            var existingUser = await _userManager.FindByNameAsync(email);
-            if (existingUser != null)
-            {
-                return new RegistrationResponse
-                {
-                    Success = false,
-                    Message = "User with a given email address already exists"
-                };
-            }
-
             var user = new ApiUser
             {
                 Email = email,
