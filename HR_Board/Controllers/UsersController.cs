@@ -26,7 +26,7 @@ namespace HR_Board.Controllers
             {
                 return BadRequest(ModelState);
             }
-           
+
             var result = await _userService.Register(requestDTO.Email, requestDTO.Password, Dto.BuildProfile(requestDTO));
 
             if (result.Success)
@@ -35,7 +35,7 @@ namespace HR_Board.Controllers
             }
             else
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = result.Message });
+                return BadRequest(new { Status = "Error", Message = result.Message });
             }
         }
 
