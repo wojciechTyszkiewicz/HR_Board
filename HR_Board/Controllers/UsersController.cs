@@ -27,11 +27,11 @@ namespace HR_Board.Controllers
                 return BadRequest(ModelState);
             }
 
-            var result = await _userService.Register(requestDTO.Email, requestDTO.Password, DtoConversionExtensions.BuildProfile(requestDTO));
+            var result = await _userService.Register(requestDTO.Email, requestDTO.Password, DtoConversion.BuildProfile(requestDTO));
 
             if (result.Success)
             {
-                return Ok(DtoConversionExtensions.From(result));
+                return Ok(DtoConversion.From(result));
             }
             else
             {
@@ -53,7 +53,7 @@ namespace HR_Board.Controllers
 
             if (result.Success && result.User != null)
             {
-                return Ok(DtoConversionExtensions.From(result));
+                return Ok(DtoConversion.From(result));
 
             }
             return Unauthorized();
