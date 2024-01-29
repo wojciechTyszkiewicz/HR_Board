@@ -11,8 +11,6 @@ namespace HR_Board.Data.DataBaseConfig
         {
             base.Configure(builder);
 
-            builder.HasKey(e => e.Id);
-
             builder.Property(x => x.MeetingType)
                 .HasConversion(new EnumToStringConverter<MeetingType>());
 
