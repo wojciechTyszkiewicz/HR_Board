@@ -51,6 +51,10 @@ namespace HR_Board.Data
             {
                 switch (entry.State)
                 {
+                    case EntityState.Added:
+                        entry.CurrentValues[nameof(IBaseEntity.CreatedAt)] = DateTime.UtcNow;
+                        entry.State = EntityState.Added;
+                        break;
                     case EntityState.Deleted:
                         entry.CurrentValues[nameof(IBaseEntity.IsDeleted)] = true;
                         entry.State = EntityState.Modified;

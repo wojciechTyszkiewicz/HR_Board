@@ -7,9 +7,22 @@ namespace HR_Board.Data.DataBaseConfig
     {
         public virtual void Configure(EntityTypeBuilder<IBaseEntity> builder)
         {
+            builder.HasKey(x => x.Id);
+
             builder.Property(x => x.Id)
                 .IsRequired()
                 .ValueGeneratedOnAdd();
+
+            builder.Property(x => x.CreatedAt)
+                .IsRequired();
+
+            builder.Property(x => x.UpdatedAt)
+                .IsRequired();
+
+            builder.Property(x => x.IsDeleted)
+                .IsRequired();
+
+            builder.HasQueryFilter(x => !x.IsDeleted);
         }
     }
 
