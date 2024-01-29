@@ -16,10 +16,10 @@ namespace HR_Board.Data.DataBaseConfig
             builder.Property(x => x.MeetingType)
                 .HasConversion(new EnumToStringConverter<MeetingType>());
 
-            builder.HasOne(e => e.Job)
+            builder.HasOne(e => e.Job);
 
-            builder.HasOne(e => e.Candidate)
-                .WithMany(e => e.Meeting)
+/*            builder.HasOne(e => e.Candidate)
+                .WithMany(e => e.Meetings);*/
 
                 
         }

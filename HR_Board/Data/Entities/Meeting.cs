@@ -7,7 +7,7 @@ namespace HR_Board.Data.Entities
     {
         public Guid Id { get; set; }
         public DateTime MeetingDate { get; set; }
-        public MeetingType MeetingType { get; set; } = MeetingType.online;
+        public MeetingType MeetingType { get; set; } = MeetingType.Online;
         public string MeetingAddress { get; set; }
         public string MeetingUrl { get; set; }
         public ApiUser Candidate { get; set; }
