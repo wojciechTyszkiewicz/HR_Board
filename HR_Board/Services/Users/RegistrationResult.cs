@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace HR_Board.Services.Users
 {
-    public class RegistrationResponse
+    public class RegistrationResult
     {
         public bool Success { get; set; }
         public string Message { get; set; }

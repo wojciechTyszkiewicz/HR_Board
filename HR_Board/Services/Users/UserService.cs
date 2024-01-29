@@ -17,7 +17,7 @@ namespace HR_Board.Services.Users
             _tokenService = tokenService;
         }
 
-        public async Task<RegistrationResponse> Register(string email, string password, Profile profile)
+        public async Task<RegistrationResult> Register(string email, string password, Profile profile)
         {
             var user = new ApiUser
             {
@@ -66,10 +66,10 @@ namespace HR_Board.Services.Users
             };
         }
 
-        public static RegistrationResponse CreateRegistrationResponse(ApiUser user, bool success, string message)
+        public static RegistrationResult CreateRegistrationResponse(ApiUser user, bool success, string message)
         {
 
-            return new RegistrationResponse
+            return new RegistrationResult
             {
                 Success = success,
                 Message = message,

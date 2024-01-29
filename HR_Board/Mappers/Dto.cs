@@ -8,7 +8,7 @@ namespace HR_Board.Mappers
 
     public static class Dto
     {
-        public static Profile BuildProfile(this RegistrationRequestDTO registrationRequestDTO)
+        public static Profile BuildProfile(RegistrationRequestDTO registrationRequestDTO)
         {
             return new Profile
             {
@@ -18,7 +18,7 @@ namespace HR_Board.Mappers
         }
 
 
-        public static RegistrationResponseDTO From(RegistrationResponse registrationResponse)
+        public static RegistrationResponseDTO From(RegistrationResult registrationResponse)
         {
             return new RegistrationResponseDTO()
             {
