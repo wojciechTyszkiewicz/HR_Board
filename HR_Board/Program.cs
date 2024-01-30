@@ -1,14 +1,19 @@
 ﻿using HealthChecks.UI.Client;
+using HR_Board.Config;
 using HR_Board.Data;
+using HR_Board.Services;
 using HR_Board.Utils;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
+using HR_Board.Services.Interfaces;
+using HR_Board.Services.Users;
 
 namespace HR_Board
 {
@@ -18,24 +23,14 @@ namespace HR_Board
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-
-            // Add DbContext
-            var dbConnectionString = builder.Configuration.GetConnectionString("DbConnection");
-            builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(dbConnectionString)); ;
-
+            builder.Services.Configure<JwtTokenSettings>(builder.Configuration.GetSection("JwtTokenSettings"));
+            builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetValue<string>("ConnectionStrings:DbConnection")));
 
             // Konfiguracja Identity
 
-            /*builder.Services.AddIdentityApiEndpoints<ApiUser>(options =>
-            {
-                options.Password.RequireLowercase = true; // Wymagana mała litera
-                options.Password.RequireUppercase = true; // Wymagana duża litera
-                options.Password.RequireDigit = true; // Wymagana cyfra
-                options.Password.RequireNonAlphanumeric = true; // Wymagany znak specjalny
-                options.Password.RequiredLength = 8; // Minimalna długość: 8 znaków
-
-            }).AddEntityFrameworkStores<AppDbContext>();*/
+            builder.Services.AddScoped<JWTTokenService>();
+            builder.Services.AddScoped<UserService>();
+            builder.Services.AddTransient<IUserService, UserService>();
 
             builder.Services.AddIdentity<ApiUser, IdentityRole<Guid>>(options =>
             {
@@ -44,14 +39,14 @@ namespace HR_Board
                 options.Password.RequireDigit = true; // Wymagana cyfra
                 options.Password.RequireNonAlphanumeric = true; // Wymagany znak specjalny
                 options.Password.RequiredLength = 8; // Minimalna długość: 8 znaków
+                options.User.RequireUniqueEmail = true;
             })
-                .AddDefaultTokenProviders().AddEntityFrameworkStores<AppDbContext>();
-
+            .AddDefaultTokenProviders().AddEntityFrameworkStores<AppDbContext>();
 
             builder.Services.AddControllers();
+            builder.Services.AddProblemDetails();
 
             builder.Services.AddEndpointsApiExplorer();
-
 
             builder.Services.AddApiVersioning(o =>
             {
@@ -60,8 +55,22 @@ namespace HR_Board
                 o.ReportApiVersions = true;
             });
 
-            builder.Services.AddAuthorization();
 
+            var jwtSettings = new JwtTokenSettings();
+            builder.Configuration.GetSection("JwtTokenSettings").Bind(jwtSettings);
+
+            // Set the default authentication scheme
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetValue<string>(jwtSettings.SymmetricSecurityKey)!)),
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                    };
+                });
             //Swager configuration
             builder.Services.AddSwaggerGen(opt =>
             {
@@ -85,16 +94,15 @@ namespace HR_Board
 
             var app = builder.Build();
 
+            app.UseExceptionHandler();
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
-            app.UseHttpsRedirection();
-
-            app.UseAuthentication();
+            
+            app.UseHttpsRedirection();;
             app.UseAuthorization();
 
             app.MapHealthChecks(
@@ -107,7 +115,6 @@ namespace HR_Board
             
 
             app.MapControllers();
-
             app.Run();
         }
     }
