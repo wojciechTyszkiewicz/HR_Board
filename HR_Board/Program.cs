@@ -12,6 +12,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using HR_Board.Services.Interfaces;
+using HR_Board.Services.Users;
 
 namespace HR_Board
 {
@@ -27,6 +29,8 @@ namespace HR_Board
             // Konfiguracja Identity
 
             builder.Services.AddScoped<JWTTokenService>();
+            builder.Services.AddScoped<UserService>();
+            builder.Services.AddTransient<IUserService, UserService>();
 
             builder.Services.AddIdentity<ApiUser, IdentityRole<Guid>>(options =>
             {
@@ -35,10 +39,12 @@ namespace HR_Board
                 options.Password.RequireDigit = true; // Wymagana cyfra
                 options.Password.RequireNonAlphanumeric = true; // Wymagany znak specjalny
                 options.Password.RequiredLength = 8; // Minimalna długość: 8 znaków
+                options.User.RequireUniqueEmail = true;
             })
             .AddDefaultTokenProviders().AddEntityFrameworkStores<AppDbContext>();
 
             builder.Services.AddControllers();
+            builder.Services.AddProblemDetails();
 
             builder.Services.AddEndpointsApiExplorer();
 
@@ -88,13 +94,14 @@ namespace HR_Board
 
             var app = builder.Build();
 
+            app.UseExceptionHandler();
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            
             app.UseHttpsRedirection();;
             app.UseAuthorization();
 

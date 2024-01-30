@@ -1,9 +1,13 @@
-﻿using HR_Board.Data;
+﻿using HR_Board.Mappers;
+using HR_Board.Models.DTO;
+using HR_Board.Services.Interfaces;
+using HR_Board.Data;
 using HR_Board.Data.ModelDTO;
 using HR_Board.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
@@ -14,41 +18,32 @@ namespace HR_Board.Controllers
 
     public class UsersController : ControllerBase
     {
-        private readonly UserManager<ApiUser> _userManager;
-        private readonly AppDbContext _appDbContext;
-        private readonly JWTTokenService _tokenService;
-        public UsersController(UserManager<ApiUser> userManager, AppDbContext context, JWTTokenService tokenService)
+        private readonly IUserService _userService;
+
+        public UsersController(IUserService userService)
         {
-            _userManager = userManager;
-            _appDbContext = context;
-            _tokenService = tokenService;
+            _userService = userService;
         }
 
         [HttpPost]
         [Route("register")]
-        public async Task<IActionResult> Register(RegistrationRequestDTO request)
+        public async Task<IActionResult> Register([FromBody] RegistrationRequestDTO requestDTO)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var result = await _userManager.CreateAsync(
-                new ApiUser { UserName = request.Username, Email = request.Email },
-                request.Password);
+            var result = await _userService.Register(requestDTO.Email, requestDTO.Password, DtoConversion.BuildProfile(requestDTO));
 
-            if (result.Succeeded)
+            if (result.Success)
             {
-                request.Password = "***";
-                return CreatedAtAction(nameof(Register), new { email = request.Email }, request);
+                return Ok(DtoConversion.From(result));
             }
-
-            foreach (var error in result.Errors)
+            else
             {
-                ModelState.AddModelError(error.Code, error.Description);
+                return BadRequest(new { Status = "Error", Message = result.Message });
             }
-            return BadRequest(ModelState);
-
         }
 
         [HttpPost]
@@ -60,62 +55,53 @@ namespace HR_Board.Controllers
                 return BadRequest(ModelState);
             }
 
-            var managedUser = await _userManager.FindByEmailAsync(request.Email);
-            if (managedUser == null)
+        [HttpPost]
+        [Route("login")]
+        public async Task<ActionResult<AuthResponseDTO>> Authenticate([FromBody] AuthRequestDTO request)
+        {
+            if (!ModelState.IsValid)
             {
-                return BadRequest("Bad credentials");
+                return BadRequest(ModelState);
             }
 
-            var isPasswordValid = await _userManager.CheckPasswordAsync(managedUser, request.Password);
-            if (!isPasswordValid)
+            var result = await _userService.Authenticate(request.Email, request.Password);
+
+            if (result.Success && result.User != null)
             {
-                return BadRequest("Bad credentials");
+                return Ok(DtoConversion.From(result));
+
             }
-
-            var userInDb = _appDbContext.Users.FirstOrDefault(u => u.Email == request.Email);
-            if (userInDb is null)
-            {
-                return Unauthorized();
-            }
-
-            var accessToken = _tokenService.GenerateJwtToken(userInDb);
-
-            // is there wa way to pass it to _userManager, _appDbContext.UserTokens ??
-
-            return Ok(new AuthResponseDTO
-            {
-                UserName = userInDb.UserName,
-                Email = userInDb.Email,
-                Token = accessToken,
-            });
+            return Unauthorized();
         }
 
-       /* [Authorize(AuthenticationSchemes = "Bearer")]
-        [HttpGet]
-        [Route("test")]
-        public async Task<IActionResult> Test()
-        {
+        /* [Authorize(AuthenticationSchemes = "Bearer")]
+         [HttpGet]
+         [Route("test")]
+         public async Task<IActionResult> Test()
+         {
 
-            var identity = User.Identity as ClaimsIdentity;
+             var identity = User.Identity as ClaimsIdentity;
 
-            if (identity != null)
-            {
-                // Extract claims
-                IEnumerable<Claim> claims = identity.Claims;
+             if (identity != null)
+             {
+                 // Extract claims
+                 IEnumerable<Claim> claims = identity.Claims;
 
-                // Get specific claim values (e.g., user ID, username)
-                var userId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                var username = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+                 // Get specific claim values (e.g., user ID, username)
+                 var userId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                 var username = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
 
-                var email = claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+                 var email = claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
 
-                var user = await _userManager.FindByEmailAsync(email);
-                // Use this information as needed
-                // ...
+                 var user = await _userManager.FindByEmailAsync(email);
+                 // Use this information as needed
+                 // ...
 
-                return Ok($"User ID: {userId}, Username: {username}, email: {email} --- {user.CreatedAt}");
-            }
-            return Ok("ok");
-        }*/
+                 return Ok($"User ID: {userId}, Username: {username}, email: {email} --- {user.CreatedAt}");
+             }
+             return Ok("ok");
+         }*/
+
     }
 }
+
