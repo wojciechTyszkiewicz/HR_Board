@@ -1,15 +1,7 @@
 ﻿using HR_Board.Mappers;
-using HR_Board.Models.DTO;
 using HR_Board.Services.Interfaces;
-using HR_Board.Data;
 using HR_Board.Data.ModelDTO;
-using HR_Board.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace HR_Board.Controllers
 {
@@ -45,15 +37,6 @@ namespace HR_Board.Controllers
                 return BadRequest(new { Status = "Error", Message = result.Message });
             }
         }
-
-        [HttpPost]
-        [Route("login")]
-        public async Task<ActionResult<AuthResponseDTO>> Authenticate([FromBody] AuthRequestDTO request)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
 
         [HttpPost]
         [Route("login")]
