@@ -1,18 +1,32 @@
-﻿using HR_Board.Data.Interfaces;
+﻿using HR_Board.Data.Entities;
+using HR_Board.Data.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.Reflection;
 
 namespace HR_Board.Data
 {
     public class AppDbContext : IdentityDbContext<ApiUser, IdentityRole<Guid>, Guid>
     {
+
+        public DbSet<Job> Jobs { get; set; }
+        public DbSet<Meeting> Meetings { get; set; }
+
+
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
             SavingChanges += AppDbContext_SavingChanges;
             SavingChanges += AppDbContext_SavedChanges;
             SaveChangesFailed += AppDbContext_SaveChangesFailed;
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
         }
 
         private void AppDbContext_SaveChangesFailed(object sender, SaveChangesFailedEventArgs e)
@@ -37,6 +51,10 @@ namespace HR_Board.Data
             {
                 switch (entry.State)
                 {
+                    case EntityState.Added:
+                        entry.CurrentValues[nameof(IBaseEntity.CreatedAt)] = DateTime.UtcNow;
+                        entry.State = EntityState.Added;
+                        break;
                     case EntityState.Deleted:
                         entry.CurrentValues[nameof(IBaseEntity.IsDeleted)] = true;
                         entry.State = EntityState.Modified;
@@ -48,19 +66,5 @@ namespace HR_Board.Data
             }
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-
-/*            // Konfiguracja BaseEntity
-            modelBuilder.Entity<BaseEntity>(be =>
-            {
-                be.HasQueryFilter(b => b.IsDeleted == false);
-                be.Property(b => b.Id).IsRequired().ValueGeneratedOnAdd();
-                be.Property(b => b.CreatedAt).IsRequired().ValueGeneratedOnAdd();
-            });*/
-
-
-        }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace HR_Board.Models.DTO
+﻿namespace HR_Board.Data.ModelDTO
 {
     public class AuthResponseDTO
     {

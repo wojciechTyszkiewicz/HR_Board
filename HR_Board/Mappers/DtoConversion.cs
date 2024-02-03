@@ -1,5 +1,5 @@
 ﻿using HR_Board.Data;
-using HR_Board.Models.DTO;
+using HR_Board.Data.ModelDTO;
 using HR_Board.Services.Users;
 using System.ComponentModel.DataAnnotations;
 
