@@ -30,6 +30,7 @@ namespace HR_Board
 
             builder.Services.AddScoped<JWTTokenService>();
             builder.Services.AddScoped<UserService>();
+            builder.Services.AddScoped<IJobService, JobService>();
             builder.Services.AddTransient<IUserService, UserService>();
 
             builder.Services.AddIdentity<ApiUser, IdentityRole<Guid>>(options =>

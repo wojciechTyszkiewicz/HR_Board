@@ -13,7 +13,7 @@ namespace HR_Board.Services.Interfaces
     public interface IUserService
     {
 
-        Task<AuthResult> Authenticate(string username, string password);
-        Task<RegistrationResult> Register(string email, string password, Profile profile);
+        Task<AuthResult> AuthenticateAsync(string username, string password);
+        Task<RegistrationResult> RegisterAsync(string email, string password, Profile profile);
     }
 }
