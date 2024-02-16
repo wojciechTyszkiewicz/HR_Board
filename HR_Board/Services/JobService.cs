@@ -14,12 +14,10 @@ namespace HR_Board.Services
     public class JobService : IJobService
     {
         private readonly AppDbContext _context;
-        private readonly UserManager<ApiUser> _userManager;
 
         public JobService(AppDbContext context, UserManager<ApiUser> userManager)
         {
             _context = context;
-            _userManager = userManager;
         }
 
         public async Task<IEnumerable<Job>> GetAllAsync()

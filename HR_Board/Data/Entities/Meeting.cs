@@ -10,14 +10,11 @@ namespace HR_Board.Data.Entities
         public MeetingType MeetingType { get; set; } = MeetingType.Online;
         public string MeetingAddress { get; set; }
         public string MeetingUrl { get; set; }
-        public ApiUser Candidate { get; set; }
-        public Guid CandidateId { get; set; }
+/*        public ApiUser Candidate { get; set; }
+        public Guid CandidateId { get; set; }*/
         public Job Job { get; set; }
-        public Guid JobId { get; set; }
-
+/*        public Guid JobId { get; set; }*/
     }
-
-
 }
 
 

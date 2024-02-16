@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using HR_Board.Data;
 using HR_Board.Data.Entities;
 using HR_Board.Data.Enums;
 using HR_Board.Data.ModelDTO;
 using HR_Board.Mappers;
 using HR_Board.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,26 +22,32 @@ namespace WebApi.Controllers
     {
         private readonly IJobService _jobService;
         private readonly UserManager<ApiUser> _userManager;
+        private readonly IMapper _mapper;
 
-        public JobController(IJobService jobService, UserManager<ApiUser> userManager)
+        public JobController(IJobService jobService, UserManager<ApiUser> userManager, IMapper mapper)
         {
             _jobService = jobService;
             _userManager = userManager;
+            _mapper = mapper;
 
         }
 
         // GET: api/Job
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Job>>> GetAll()
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        public async Task<ActionResult<IEnumerable<JobResponseDto>>> GetAll()
         {
             var jobs = await _jobService.GetAllAsync();
+            var jobsDto = _mapper.Map<IEnumerable<JobResponseDto>>(jobs);
+
             //dodać paginację wyników
-            return Ok(jobs);
+            return Ok(jobsDto);
         }
 
         // GET: api/Job/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Job>> GetById(Guid id)
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        public async Task<ActionResult<JobResponseDto>> GetById(Guid id)
         {
             var job = await _jobService.GetByIdAsync(id);
 
@@ -47,12 +55,14 @@ namespace WebApi.Controllers
             {
                 return NotFound();
             }
+            var jobDto = _mapper.Map<JobResponseDto>(job);
 
-            return Ok(job);
+            return Ok(jobDto);
         }
 
         // POST: api/Job
         [HttpPost]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> Create(CreateJobRequestDto jobDto)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -67,7 +77,8 @@ namespace WebApi.Controllers
 
         // PUT: api/Job/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, UpdateJobRequestDto jobDto)
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        public async Task<IActionResult> Update( Guid id, [FromBody] UpdateJobRequestDto jobDto)
         {
             var user = await _userManager.GetUserAsync(User);
             var updateJobCommand = DtoJobConversion.From(jobDto) with { UserId = user.Id, JobId = id };
@@ -80,6 +91,7 @@ namespace WebApi.Controllers
 
         // DELETE: api/Job/5
         [HttpDelete("{id}")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var success = await _jobService.DeleteAsync(id);
@@ -94,10 +106,11 @@ namespace WebApi.Controllers
 
         // PUT: api/Job/5
         [HttpPost("{id}")]
-        public async Task<IActionResult> UpdateJobStatus(Guid id, JobStatus state)
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        public async Task<IActionResult> UpdateJobStatus(Guid id, [FromBody] JobStatus state)
         {
             var success = await _jobService.UpdateJobStatusAsync(id, state);
-            return success ? Created(): BadRequest();
+            return success ? Created() : BadRequest();
         }
     }
 }
