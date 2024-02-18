@@ -38,6 +38,10 @@ namespace WebApi.Controllers
         public async Task<ActionResult<IEnumerable<JobResponseDto>>> GetAll()
         {
             var jobs = await _jobService.GetAllAsync();
+            if(jobs == null)
+            {
+                return NoContent();
+            }
             var jobsDto = _mapper.Map<IEnumerable<JobResponseDto>>(jobs);
 
             //dodać paginację wyników
