@@ -61,7 +61,7 @@ namespace HR_Board.Services.JobService
             {
                 return new OperationResponse(false, OperationResponseStatus.NotFound);
             }
-            if (!await _context.Jobs.Where(job => job.CreatedBy == jobFromController.UserId).AnyAsync())
+            if (!await _context.Jobs.Where(job => job.Id == jobFromController.JobId && job.CreatedBy == jobFromController.UserId).AnyAsync())
             {
                 return new OperationResponse(false, OperationResponseStatus.Forbiden);
             }
@@ -84,7 +84,7 @@ namespace HR_Board.Services.JobService
             {
                 return new OperationResponse(false, OperationResponseStatus.NotFound);
             }
-            if (!await _context.Jobs.Where(job => job.CreatedBy == userId).AnyAsync())
+            if (!await _context.Jobs.Where(job => job.Id == id && job.CreatedBy == userId).AnyAsync())
             {
                 return new OperationResponse(false, OperationResponseStatus.Forbiden);
             }
@@ -102,7 +102,7 @@ namespace HR_Board.Services.JobService
             {
                 return new OperationResponse(false, OperationResponseStatus.NotFound);
             }
-            if (!await _context.Jobs.Where(job => job.CreatedBy == userId).AnyAsync())
+            if (!await _context.Jobs.Where(job => job.Id == id && job.CreatedBy == userId).AnyAsync())
             {
                 return new OperationResponse(false, OperationResponseStatus.Forbiden);
             }
