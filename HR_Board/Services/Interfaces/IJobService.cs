@@ -2,6 +2,7 @@
 using HR_Board.Data.Entities;
 using HR_Board.Data.Enums;
 using HR_Board.Data.ModelDTO;
+using HR_Board.Services.JobService;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HR_Board.Services.Interfaces
@@ -12,12 +13,21 @@ namespace HR_Board.Services.Interfaces
 
         public Task<Job> GetByIdAsync(Guid id);
 
-        public Task<bool> CreateAsync(CreateJobCommand jobFromController);
+        public Task<Guid> CreateAsync(CreateJobCommand jobFromController);
 
-        public Task<bool> UpdateAsync(UpdateJobCommand jobFromController);
+        public Task<OperationResponse> UpdateAsync(UpdateJobCommand jobFromController);
 
-        public Task<bool> DeleteAsync(Guid id);
+        public Task<OperationResponse> DeleteAsync(Guid id, Guid userId);
 
         public Task<bool> UpdateJobStatusAsync(Guid id, JobStatus state);
+
+        bool HasAuthotization(Operation operation, Job job, Guid userId);
     };
+
+    public enum Operation
+    {
+        Create,
+        Delete,
+        Update
+    }
 }

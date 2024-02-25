@@ -1,46 +1,54 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
+using HR_Board.Controllers;
 using HR_Board.Data;
 using HR_Board.Data.Entities;
 using HR_Board.Data.Enums;
 using HR_Board.Data.ModelDTO;
 using HR_Board.Mappers;
 using HR_Board.Services.Interfaces;
+using HR_Board.Services.JobService;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 
 namespace WebApi.Controllers
 {
+
+
     [Route("api/[controller]")]
     [ApiController]
-    public class JobController : ControllerBase
+    public class JobController : HrController
     {
         private readonly IJobService _jobService;
         private readonly UserManager<ApiUser> _userManager;
         private readonly IMapper _mapper;
 
-        public JobController(IJobService jobService, UserManager<ApiUser> userManager, IMapper mapper)
+        public JobController(IJobService jobService, UserManager<ApiUser> userManager, IMapper mapper, LinkGenerator linkGenerator) : base("Job", linkGenerator)
         {
             _jobService = jobService;
             _userManager = userManager;
             _mapper = mapper;
 
+
         }
 
         // GET: api/Job
         [HttpGet]
-        [Authorize(AuthenticationSchemes = "Bearer")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<IEnumerable<JobResponseDto>>> GetAll()
         {
             var jobs = await _jobService.GetAllAsync();
-            if(jobs == null)
+            if (jobs == null)
             {
-                return NoContent();
+                return NotFound();
             }
             var jobsDto = _mapper.Map<IEnumerable<JobResponseDto>>(jobs);
 
@@ -50,7 +58,7 @@ namespace WebApi.Controllers
 
         // GET: api/Job/5
         [HttpGet("{id}")]
-        [Authorize(AuthenticationSchemes = "Bearer")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<JobResponseDto>> GetById(Guid id)
         {
             var job = await _jobService.GetByIdAsync(id);
@@ -66,55 +74,82 @@ namespace WebApi.Controllers
 
         // POST: api/Job
         [HttpPost]
-        [Authorize(AuthenticationSchemes = "Bearer")]
-        public async Task<IActionResult> Create(CreateJobRequestDto jobDto)
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IResult> Create(CreateJobRequestDto jobDto, LinkGenerator linkGenerator)
         {
+
+
             var user = await _userManager.GetUserAsync(User);
- 
-            var createJobCommand = DtoJobConversion.From(jobDto) with { UserId = user.Id};
 
-            var succes = await _jobService.CreateAsync(createJobCommand);
+            var createJobCommand = DtoJobConversion.From(jobDto) with { UserId = user.Id };
 
-            return succes ? Created(): BadRequest(); 
+            Guid createdJobId = await _jobService.CreateAsync(createJobCommand);
+
+            if (createdJobId == null)
+            {
+                return Results.BadRequest();
+            }
+
+            return CreatedAtGet(nameof(GetById), createdJobId);
+            /*            return CreatedAtAction(nameof(Create), new { Id = createdJobId }, createdJobId);*/
+            // w przypadku zmiany GetById na inną ścieżkę nie generował poprawnego URL - dlaczego?
         }
 
 
         // PUT: api/Job/5
         [HttpPut("{id}")]
-        [Authorize(AuthenticationSchemes = "Bearer")]
-        public async Task<IActionResult> Update( Guid id, [FromBody] UpdateJobRequestDto jobDto)
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateJobRequestDto jobDto)
         {
             var user = await _userManager.GetUserAsync(User);
             var updateJobCommand = DtoJobConversion.From(jobDto) with { UserId = user.Id, JobId = id };
 
             var success = await _jobService.UpdateAsync(updateJobCommand);
 
-
-            return success ? Created(): BadRequest(); 
+            if(!success.Success)
+            {
+                switch(success.ResponseStatus)
+                {
+                    case OperationResponseStatus.NotFound:
+                        return NotFound();
+                    case OperationResponseStatus.Forbiden:
+                        return Forbid();
+                }
+            }
+            return Ok();
         }
 
         // DELETE: api/Job/5
         [HttpDelete("{id}")]
-        [Authorize(AuthenticationSchemes = "Bearer")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var success = await _jobService.DeleteAsync(id);
+            var user = await _userManager.GetUserAsync(User);
 
-            if (!success)
+            var success = await _jobService.DeleteAsync(id, user.Id);
+
+            if (!success.Success)
             {
-                return NotFound();
+                switch (success.ResponseStatus)
+                {
+                    case OperationResponseStatus.NotFound:
+                        return NotFound();
+                    case OperationResponseStatus.Forbiden:
+                        return Forbid();
+                }
             }
-
-            return NoContent();
+            return Ok();
         }
 
         // PUT: api/Job/5
-        [HttpPost("{id}")]
-        [Authorize(AuthenticationSchemes = "Bearer")]
+        [HttpPatch("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> UpdateJobStatus(Guid id, [FromBody] JobStatus state)
         {
             var success = await _jobService.UpdateJobStatusAsync(id, state);
             return success ? Created() : BadRequest();
         }
+
+
     }
 }

@@ -18,6 +18,7 @@ using FluentValidation.AspNetCore;
 using HR_Board.Data.Validators;
 using FluentValidation;
 using HR_Board.Data.ModelDTO;
+using HR_Board.Services.JobService;
 
 namespace HR_Board
 {
