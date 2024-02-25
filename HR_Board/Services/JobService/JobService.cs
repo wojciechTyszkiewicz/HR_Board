@@ -46,12 +46,9 @@ namespace HR_Board.Services.JobService
                 CreatedBy = jobFromController.UserId
             };
 
-
             await _context.Jobs.AddAsync(job);
             var r = await _context.SaveChangesAsync();
             return job.Id;
-
-            /*            return CreatedAtAction(nameof(GetById), new { id = job.Id }, job);*/
         }
 
         public async Task<OperationResponse> UpdateAsync(UpdateJobCommand jobFromController)
