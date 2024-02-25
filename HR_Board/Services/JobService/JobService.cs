@@ -47,7 +47,7 @@ namespace HR_Board.Services.JobService
             };
 
 
-            await _context.AddAsync(job);
+            await _context.Jobs.AddAsync(job);
             var r = await _context.SaveChangesAsync();
             return job.Id;
 
@@ -56,17 +56,16 @@ namespace HR_Board.Services.JobService
 
         public async Task<OperationResponse> UpdateAsync(UpdateJobCommand jobFromController)
         {
-            var jobToUpdate = await GetByIdAsync(jobFromController.JobId);
 
-            if (jobToUpdate == null)
+            if (!await _context.Jobs.Where(job => job.Id == jobFromController.JobId).AnyAsync())
             {
                 return new OperationResponse(false, OperationResponseStatus.NotFound);
             }
-            if (!HasAuthotization(Operation.Update, jobToUpdate, jobFromController.UserId))
+            if (!await _context.Jobs.Where(job => job.CreatedBy == jobFromController.UserId).AnyAsync())
             {
                 return new OperationResponse(false, OperationResponseStatus.Forbiden);
             }
-
+            var jobToUpdate = await GetByIdAsync(jobFromController.JobId);
 
             jobToUpdate.Title = jobFromController.Title;
             jobToUpdate.ShortDescription = jobFromController.ShortDescription;
@@ -75,28 +74,23 @@ namespace HR_Board.Services.JobService
             jobToUpdate.CompanyName = jobFromController.CompanyName;
             jobToUpdate.Status = jobFromController.Status;
 
-            _context.Entry(jobToUpdate).State = EntityState.Modified;
             var r = await _context.SaveChangesAsync();
-
             return new OperationResponse(r == 1, OperationResponseStatus.Success);
-
         }
 
         public async Task<OperationResponse> DeleteAsync(Guid id, Guid userId)
         {
-            var jobToDelete = await GetByIdAsync(id);
-            if (jobToDelete == null)
+            if (!await _context.Jobs.Where(job => job.Id == id).AnyAsync())
             {
                 return new OperationResponse(false, OperationResponseStatus.NotFound);
             }
-            if (!HasAuthotization(Operation.Delete, jobToDelete, userId))
+            if (!await _context.Jobs.Where(job => job.CreatedBy == userId).AnyAsync())
             {
                 return new OperationResponse(false, OperationResponseStatus.Forbiden);
             }
 
-            jobToDelete.IsDeleted = true;
-
-            _context.Entry(jobToDelete).State = EntityState.Deleted;
+            /*jobToDelete.IsDeleted = true;*/
+            _context.Jobs.Remove(new Job { Id = id });
             var r = await _context.SaveChangesAsync();
 
             return new OperationResponse(r == 1, OperationResponseStatus.Success);
@@ -104,19 +98,18 @@ namespace HR_Board.Services.JobService
 
         public async Task<OperationResponse> UpdateJobStatusAsync(Guid id, Guid userId, JobStatus state)
         {
-            var jobToUpdateStatus = await GetByIdAsync(id);
-
-            if (jobToUpdateStatus == null)
+            if (!await _context.Jobs.Where(job => job.Id == id).AnyAsync())
             {
                 return new OperationResponse(false, OperationResponseStatus.NotFound);
             }
-            if (!HasAuthotization(Operation.Delete, jobToUpdateStatus, userId))
+            if (!await _context.Jobs.Where(job => job.CreatedBy == userId).AnyAsync())
             {
                 return new OperationResponse(false, OperationResponseStatus.Forbiden);
             }
 
+            var jobToUpdateStatus = await GetByIdAsync(id);
             jobToUpdateStatus.Status = state;
-            _context.Entry(jobToUpdateStatus).State = EntityState.Modified;
+/*            _context.Entry(jobToUpdateStatus).State = EntityState.Modified;*/
             var r = await _context.SaveChangesAsync();
 
             return new OperationResponse(r == 1, OperationResponseStatus.Success);

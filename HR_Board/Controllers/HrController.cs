@@ -27,11 +27,11 @@ namespace HR_Board.Controllers
             return Results.Created(location, id);
         }
 
-        protected IResult ReturnStatusCode(OperationResponse success)
+        protected IResult ReturnStatusCode(OperationResponse response)
         {
-            if (!success.Success)
+            if (!response.Success)
             {
-                switch (success.ResponseStatus)
+                switch (response.ResponseStatus)
                 {
                     case OperationResponseStatus.NotFound:
                         return Results.NotFound();

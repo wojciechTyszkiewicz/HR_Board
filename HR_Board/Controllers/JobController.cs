@@ -68,7 +68,6 @@ namespace WebApi.Controllers
         public async Task<IResult> Create(CreateJobRequestDto jobDto, LinkGenerator linkGenerator)
         {
 
-
             var user = await _userManager.GetUserAsync(User);
 
             var createJobCommand = DtoJobConversion.From(jobDto) with { UserId = user.Id };
