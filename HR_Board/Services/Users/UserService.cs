@@ -9,7 +9,7 @@ namespace HR_Board.Services.Users
     {
         private readonly UserManager<ApiUser> _userManager;
         private readonly JWTTokenService _tokenService;
-        public UserService(UserManager<ApiUser> userManager, AppDbContext context, JWTTokenService tokenService)
+        public UserService(UserManager<ApiUser> userManager, JWTTokenService tokenService)
         {
             _userManager = userManager;
             _tokenService = tokenService;

@@ -102,19 +102,24 @@ namespace HR_Board.Services.JobService
             return new OperationResponse(r == 1, OperationResponseStatus.Success);
         }
 
-        public async Task<bool> UpdateJobStatusAsync(Guid id, JobStatus state)
+        public async Task<OperationResponse> UpdateJobStatusAsync(Guid id, Guid userId, JobStatus state)
         {
-            var job = await GetByIdAsync(id);
-            if (job == null)
+            var jobToUpdateStatus = await GetByIdAsync(id);
+
+            if (jobToUpdateStatus == null)
             {
-                return false;
+                return new OperationResponse(false, OperationResponseStatus.NotFound);
+            }
+            if (!HasAuthotization(Operation.Delete, jobToUpdateStatus, userId))
+            {
+                return new OperationResponse(false, OperationResponseStatus.Forbiden);
             }
 
-            job.Status = state;
-            _context.Entry(job).State = EntityState.Modified;
+            jobToUpdateStatus.Status = state;
+            _context.Entry(jobToUpdateStatus).State = EntityState.Modified;
             var r = await _context.SaveChangesAsync();
 
-            return r == 1;
+            return new OperationResponse(r == 1, OperationResponseStatus.Success);
         }
 
 

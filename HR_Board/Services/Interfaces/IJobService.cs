@@ -19,7 +19,7 @@ namespace HR_Board.Services.Interfaces
 
         public Task<OperationResponse> DeleteAsync(Guid id, Guid userId);
 
-        public Task<bool> UpdateJobStatusAsync(Guid id, JobStatus state);
+        public Task<OperationResponse> UpdateJobStatusAsync(Guid id, Guid userId, JobStatus state);
 
         bool HasAuthotization(Operation operation, Job job, Guid userId);
     };

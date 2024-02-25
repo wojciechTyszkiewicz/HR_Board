@@ -146,8 +146,21 @@ namespace WebApi.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> UpdateJobStatus(Guid id, [FromBody] JobStatus state)
         {
-            var success = await _jobService.UpdateJobStatusAsync(id, state);
-            return success ? Created() : BadRequest();
+            var user = await _userManager.GetUserAsync(User);
+
+            var success = await _jobService.UpdateJobStatusAsync(id, user.Id, state);
+
+            if (!success.Success)
+            {
+                switch (success.ResponseStatus)
+                {
+                    case OperationResponseStatus.NotFound:
+                        return NotFound();
+                    case OperationResponseStatus.Forbiden:
+                        return Forbid();
+                }
+            }
+            return Ok();
         }
 
 
