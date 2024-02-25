@@ -1,23 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using HR_Board.Controllers;
 using HR_Board.Data;
-using HR_Board.Data.Entities;
 using HR_Board.Data.Enums;
 using HR_Board.Data.ModelDTO;
 using HR_Board.Mappers;
 using HR_Board.Services.Interfaces;
-using HR_Board.Services.JobService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.EntityFrameworkCore;
 
 namespace WebApi.Controllers
 {
@@ -36,7 +27,6 @@ namespace WebApi.Controllers
             _jobService = jobService;
             _userManager = userManager;
             _mapper = mapper;
-
 
         }
 
@@ -99,68 +89,38 @@ namespace WebApi.Controllers
         // PUT: api/Job/5
         [HttpPut("{id}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateJobRequestDto jobDto)
+        public async Task<IResult> Update(Guid id, [FromBody] UpdateJobRequestDto jobDto)
         {
             var user = await _userManager.GetUserAsync(User);
             var updateJobCommand = DtoJobConversion.From(jobDto) with { UserId = user.Id, JobId = id };
 
-            var success = await _jobService.UpdateAsync(updateJobCommand);
+            var response = await _jobService.UpdateAsync(updateJobCommand);
 
-            if(!success.Success)
-            {
-                switch(success.ResponseStatus)
-                {
-                    case OperationResponseStatus.NotFound:
-                        return NotFound();
-                    case OperationResponseStatus.Forbiden:
-                        return Forbid();
-                }
-            }
-            return Ok();
+            return ReturnStatusCode(response);
         }
 
         // DELETE: api/Job/5
         [HttpDelete("{id}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IResult> Delete(Guid id)
         {
             var user = await _userManager.GetUserAsync(User);
 
-            var success = await _jobService.DeleteAsync(id, user.Id);
+            var response = await _jobService.DeleteAsync(id, user.Id);
 
-            if (!success.Success)
-            {
-                switch (success.ResponseStatus)
-                {
-                    case OperationResponseStatus.NotFound:
-                        return NotFound();
-                    case OperationResponseStatus.Forbiden:
-                        return Forbid();
-                }
-            }
-            return Ok();
+            return ReturnStatusCode(response);
         }
 
         // PUT: api/Job/5
         [HttpPatch("{id}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> UpdateJobStatus(Guid id, [FromBody] JobStatus state)
+        public async Task<IResult> UpdateJobStatus(Guid id, [FromBody] JobStatus state)
         {
             var user = await _userManager.GetUserAsync(User);
 
-            var success = await _jobService.UpdateJobStatusAsync(id, user.Id, state);
+            var response = await _jobService.UpdateJobStatusAsync(id, user.Id, state);
 
-            if (!success.Success)
-            {
-                switch (success.ResponseStatus)
-                {
-                    case OperationResponseStatus.NotFound:
-                        return NotFound();
-                    case OperationResponseStatus.Forbiden:
-                        return Forbid();
-                }
-            }
-            return Ok();
+            return ReturnStatusCode(response);
         }
 
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using HR_Board.Services.JobService;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HR_Board.Controllers
@@ -25,5 +26,22 @@ namespace HR_Board.Controllers
                 values: new { id = id });
             return Results.Created(location, id);
         }
+
+        protected IResult ReturnStatusCode(OperationResponse success)
+        {
+            if (!success.Success)
+            {
+                switch (success.ResponseStatus)
+                {
+                    case OperationResponseStatus.NotFound:
+                        return Results.NotFound();
+                    case OperationResponseStatus.Forbiden:
+                        return Results.Forbid();
+                }
+            }
+            return Results.Ok();
+        }
+
+
     }
 }
