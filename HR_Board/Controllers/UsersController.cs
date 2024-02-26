@@ -4,6 +4,7 @@ using HR_Board.Data.ModelDTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace HR_Board.Controllers
 {
@@ -59,7 +60,7 @@ namespace HR_Board.Controllers
             return Unauthorized();
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet]
         [Route("me")]
         public async Task<ActionResult<UserDto>> GetCurrentUser()
