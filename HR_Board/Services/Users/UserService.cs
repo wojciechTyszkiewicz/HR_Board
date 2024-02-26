@@ -19,6 +19,7 @@ namespace HR_Board.Services.Users
 
         public async Task<RegistrationResult> Register(string email, string password, Profile profile)
         {
+
             var user = new ApiUser
             {
                 Email = email,
@@ -52,11 +53,29 @@ namespace HR_Board.Services.Users
                 return new AuthResult(false, "User not found");
             }
 
+            //check, if user is blocked
+            if (await _userManager.IsLockedOutAsync(managedUser))
+            {
+                return new AuthResult(false, "User account is blocked.");
+            }
+
             var isPasswordValid = await _userManager.CheckPasswordAsync(managedUser, password);
             if (!isPasswordValid)
             {
+                // unsuccessfull authenticate attempt, aupdate unssuccesful atempt acounter
+                await _userManager.AccessFailedAsync(managedUser);
+
+                // Check again, if user is blocked after this unsuccessful attempt
+                if (await _userManager.IsLockedOutAsync(managedUser))
+                {
+                    return new AuthResult(false, "User account is locked.");
+                }
+
                 return new AuthResult(false, "Bad credentials");
             }
+
+            // reset unsuccessful authentication atempts acounter, if authentication was successfull
+            await _userManager.ResetAccessFailedCountAsync(managedUser);
 
             var accessToken = _tokenService.GenerateJwtToken(managedUser);
 
