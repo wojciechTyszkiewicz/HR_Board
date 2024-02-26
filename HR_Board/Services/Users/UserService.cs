@@ -1,4 +1,5 @@
 ﻿using HR_Board.Data;
+using HR_Board.Data.ModelDTO;
 using HR_Board.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 
@@ -85,9 +86,24 @@ namespace HR_Board.Services.Users
             };
         }
 
+        public async Task<GetUserByIdResult> GetUserById(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+
+            var userInfo = new GetUserByIdResult
+            {
+                Id = user.Id,
+                CreatedAt = user.CreatedAt,
+                UpdatedAt = user.UpdatedAt,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email
+            };
+            return userInfo;
+        }
+
         public static RegistrationResult CreateRegistrationResponse(ApiUser user, bool success, string message)
         {
-
             return new RegistrationResult
             {
                 Success = success,
@@ -100,6 +116,7 @@ namespace HR_Board.Services.Users
                 Email = user.Email
             };
         }
+
     }
 }
 

@@ -2,6 +2,8 @@
 using HR_Board.Services.Interfaces;
 using HR_Board.Data.ModelDTO;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace HR_Board.Controllers
 {
@@ -55,6 +57,27 @@ namespace HR_Board.Controllers
 
             }
             return Unauthorized();
+        }
+
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        [HttpGet]
+        [Route("me")]
+        public async Task<ActionResult<UserDto>> GetCurrentUser()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _userService.GetUserById(userId);
+
+            var userDto = new UserDto
+            {
+                Id = user.Id.ToString(),
+                CreatedAt = user.CreatedAt.ToString(),
+                UpdatedAt = user.UpdatedAt.ToString(),
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email
+            };
+
+            return Ok(userDto);
         }
 
         /* [Authorize(AuthenticationSchemes = "Bearer")]
