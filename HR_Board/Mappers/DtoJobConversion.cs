@@ -4,16 +4,17 @@ namespace HR_Board.Mappers
 {
     public static class DtoJobConversion
     {
-        public static CreateJobCommand From(CreateJobRequestDto createJobRequestDto)
+        public static CreateJobRequestWithUserId From(CreateJobRequestDto createJobRequestDto, Guid userId)
         {
-            return new CreateJobCommand
+            return new CreateJobRequestWithUserId
             {
                 Title = createJobRequestDto.Title,
                 ShortDescription = createJobRequestDto.ShortDescription,
                 LongDescription = createJobRequestDto.LongDescription,
                 Logo = createJobRequestDto.Logo,
                 CompanyName = createJobRequestDto.CompanyName,
-                Status = createJobRequestDto.Status
+                Status = createJobRequestDto.Status,
+                UserId = userId
             };
         }
 

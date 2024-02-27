@@ -9,6 +9,10 @@ namespace HR_Board.Mappers
         public AutomapperProfile()
         {
             CreateMap<Job, JobResponseDto>();
+
+            CreateMap<CreateJobRequestWithUserId, Job>()
+                .ForMember(dest => dest.CreatedBy,
+                opt => opt.MapFrom(src => src.UserId));
         }
     }
 }

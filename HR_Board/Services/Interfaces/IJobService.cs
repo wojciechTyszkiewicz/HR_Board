@@ -13,7 +13,7 @@ namespace HR_Board.Services.Interfaces
 
         public Task<Job> GetByIdAsync(Guid id);
 
-        public Task<Guid> CreateAsync(CreateJobCommand jobFromController);
+        public Task<Guid> CreateAsync(CreateJobRequestWithUserId jobFromController);
 
         public Task<OperationResponse> UpdateAsync(UpdateJobCommand jobFromController);
 

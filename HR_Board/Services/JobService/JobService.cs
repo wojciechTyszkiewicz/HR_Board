@@ -1,4 +1,5 @@
-﻿using HR_Board.Data;
+﻿using AutoMapper;
+using HR_Board.Data;
 using HR_Board.Data.Entities;
 using HR_Board.Data.Enums;
 using HR_Board.Data.ModelDTO;
@@ -14,10 +15,12 @@ namespace HR_Board.Services.JobService
     public class JobService : IJobService
     {
         private readonly AppDbContext _context;
+        private readonly IMapper _mapper;
 
-        public JobService(AppDbContext context, UserManager<ApiUser> userManager)
+        public JobService(AppDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<IEnumerable<Job>> GetAllAsync()
@@ -32,22 +35,13 @@ namespace HR_Board.Services.JobService
             return job;
         }
 
-        public async Task<Guid> CreateAsync(CreateJobCommand jobFromController)
+        public async Task<Guid> CreateAsync(CreateJobRequestWithUserId jobFromController)
         {
-
-            var job = new Job
-            {
-                Title = jobFromController.Title,
-                ShortDescription = jobFromController.ShortDescription,
-                LongDescription = jobFromController.LongDescription,
-                Logo = jobFromController.Logo,
-                CompanyName = jobFromController.CompanyName,
-                Status = JobStatus.Open,
-                CreatedBy = jobFromController.UserId
-            };
+            var job = _mapper.Map<Job>(jobFromController);
 
             await _context.Jobs.AddAsync(job);
             var r = await _context.SaveChangesAsync();
+
             return job.Id;
         }
 

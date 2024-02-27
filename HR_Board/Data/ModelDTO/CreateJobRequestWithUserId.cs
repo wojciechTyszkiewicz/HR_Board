@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace HR_Board.Data.ModelDTO
 {
-    public record CreateJobCommand
+    public class CreateJobRequestWithUserId
     {
         public string Title { get; set; }
 
