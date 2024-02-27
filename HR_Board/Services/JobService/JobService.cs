@@ -45,7 +45,7 @@ namespace HR_Board.Services.JobService
             return job.Id;
         }
 
-        public async Task<OperationResponse> UpdateAsync(UpdateJobCommand jobFromController)
+        public async Task<OperationResponse> UpdateAsync(UpdateJobRequestDtoWithJobIdAndUserId jobFromController)
         {
 
             if (!await _context.Jobs.Where(job => job.Id == jobFromController.JobId).AnyAsync())

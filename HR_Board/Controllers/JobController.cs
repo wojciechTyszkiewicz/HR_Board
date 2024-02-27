@@ -88,12 +88,12 @@ namespace WebApi.Controllers
         // PUT: api/Job/5
         [HttpPut("{id}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IResult> Update(Guid id, [FromBody] UpdateJobRequestDto jobDto)
+        public async Task<IResult> Update(Guid id, [FromBody] UpdateJobRequestDto jobRequestDto)
         {
             var user = await _userManager.GetUserAsync(User);
-            var updateJobCommand = DtoJobConversion.From(jobDto) with { UserId = user.Id, JobId = id };
+            var updateJobRequestWithJobIdAndUserId = DtoJobConversion.From(jobRequestDto) with { UserId = user.Id, JobId = id };
 
-            var response = await _jobService.UpdateAsync(updateJobCommand);
+            var response = await _jobService.UpdateAsync(updateJobRequestWithJobIdAndUserId);
 
             return ReturnStatusCode(response);
         }

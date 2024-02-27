@@ -15,7 +15,7 @@ namespace HR_Board.Services.Interfaces
 
         public Task<Guid> CreateAsync(CreateJobRequestWithUserId jobFromController);
 
-        public Task<OperationResponse> UpdateAsync(UpdateJobCommand jobFromController);
+        public Task<OperationResponse> UpdateAsync(UpdateJobRequestDtoWithJobIdAndUserId jobFromController);
 
         public Task<OperationResponse> DeleteAsync(Guid id, Guid userId);
 

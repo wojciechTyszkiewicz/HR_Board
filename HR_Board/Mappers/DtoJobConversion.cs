@@ -18,16 +18,18 @@ namespace HR_Board.Mappers
             };
         }
 
-        public static UpdateJobCommand From(UpdateJobRequestDto updateJobRequestDto)
+        public static UpdateJobRequestDtoWithJobIdAndUserId From(UpdateJobRequestDto updateJobRequestDto)
         {
-            return new UpdateJobCommand
+            return new UpdateJobRequestDtoWithJobIdAndUserId
             {
+                JobId = updateJobRequestDto.Id,
                 Title = updateJobRequestDto.Title,
                 ShortDescription = updateJobRequestDto.ShortDescription,
                 LongDescription = updateJobRequestDto.LongDescription,
                 Logo = updateJobRequestDto.Logo,
                 CompanyName = updateJobRequestDto.CompanyName,
-                Status = updateJobRequestDto.Status
+                Status = updateJobRequestDto.Status,
+                UserId = updateJobRequestDto.UserId
             };
         }
     }

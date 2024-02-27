@@ -5,6 +5,7 @@ namespace HR_Board.Data.ModelDTO
 {
     public class UpdateJobRequestDto
     {
+        public Guid Id { get; set; }
         public string Title { get; set; }
 
         public string ShortDescription { get; set; }
@@ -17,5 +18,6 @@ namespace HR_Board.Data.ModelDTO
         public string CompanyName { get; set; }
 
         public JobStatus Status { get; set; }
+        public Guid UserId { get; set; }
     }
 }
