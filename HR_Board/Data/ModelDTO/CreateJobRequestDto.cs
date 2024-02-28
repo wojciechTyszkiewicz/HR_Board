@@ -11,7 +11,6 @@ namespace HR_Board.Data.ModelDTO
 
         public string LongDescription { get; set; }
 
-        [Url]
         public string Logo { get; set; }
 
         public string CompanyName { get; set; }
