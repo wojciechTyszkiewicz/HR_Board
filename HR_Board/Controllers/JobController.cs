@@ -70,7 +70,7 @@ namespace WebApi.Controllers
 
             var user = await _userManager.GetUserAsync(User);
 
-            var createJobRequestWithUserId = DtoJobConversion.From(jobDto, user.Id) ;
+            CreateJobRequestWithUserId createJobRequestWithUserId = DtoJobConversion.From(jobDto, user.Id) ;
 
             Guid createdJobId = await _jobService.CreateAsync(createJobRequestWithUserId);
 
