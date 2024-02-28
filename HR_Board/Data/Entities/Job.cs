@@ -15,7 +15,7 @@ namespace HR_Board.Data.Entities
 
         public string CompanyName { get; set; }
 
-        public JobStatus Status { get; set; };
+        public JobStatus Status { get; set; }
         public Guid CreatedBy { get; set; }
     }
 }
