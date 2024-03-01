@@ -26,11 +26,11 @@ namespace HR_Board.Controllers
                 return BadRequest(ModelState);
             }
 
-            var result = await _userService.Register(requestDTO.Email, requestDTO.Password, DtoConversion.BuildProfile(requestDTO));
+            var result = await _userService.RegisterAsync(requestDTO.Email, requestDTO.Password, DtoUserConversion.BuildProfile(requestDTO));
 
             if (result.Success)
             {
-                return Ok(DtoConversion.From(result));
+                return Ok(DtoUserConversion.From(result));
             }
             else
             {
@@ -47,11 +47,11 @@ namespace HR_Board.Controllers
                 return BadRequest(ModelState);
             }
 
-            var result = await _userService.Authenticate(request.Email, request.Password);
+            var result = await _userService.AuthenticateAsync(request.Email, request.Password);
 
             if (result.Success && result.User != null)
             {
-                return Ok(DtoConversion.From(result));
+                return Ok(DtoUserConversion.From(result));
 
             }
             return Unauthorized();

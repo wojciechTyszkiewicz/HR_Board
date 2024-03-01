@@ -1,9 +1,9 @@
 ﻿using HR_Board.Data.Enums;
 using System.ComponentModel.DataAnnotations;
 
-namespace HR_Board.Data.Entities
+namespace HR_Board.Data.ModelDTO
 {
-    public class Job : BaseEntity
+    public record UpdateJobRequestDtoWithJobIdAndUserId
     {
         public string Title { get; set; }
 
@@ -11,11 +11,15 @@ namespace HR_Board.Data.Entities
 
         public string LongDescription { get; set; }
 
+        [Url]
         public string Logo { get; set; }
 
         public string CompanyName { get; set; }
 
-        public JobStatus Status { get; set; }
-        public Guid CreatedBy { get; set; }
+        public JobStatus Status { get; set; } 
+
+        public Guid UserId { get; set; }
+        public Guid JobId { get; set; }
+
     }
 }
