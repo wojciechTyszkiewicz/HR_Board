@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 namespace HR_Board.Mappers
 {
 
-    public static class DtoConversion
+    public static class DtoUserConversion
     {
         public static Profile BuildProfile(RegistrationRequestDTO registrationRequestDTO)
         {

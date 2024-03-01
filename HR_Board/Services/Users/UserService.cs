@@ -9,16 +9,14 @@ namespace HR_Board.Services.Users
     public class UserService : IUserService
     {
         private readonly UserManager<ApiUser> _userManager;
-        private readonly AppDbContext _appDbContext;
         private readonly JWTTokenService _tokenService;
-        public UserService(UserManager<ApiUser> userManager, AppDbContext context, JWTTokenService tokenService)
+        public UserService(UserManager<ApiUser> userManager, JWTTokenService tokenService)
         {
             _userManager = userManager;
-            _appDbContext = context;
             _tokenService = tokenService;
         }
 
-        public async Task<RegistrationResult> Register(string email, string password, Profile profile)
+        public async Task<RegistrationResult> RegisterAsync(string email, string password, Profile profile)
         {
 
             var user = new ApiUser
@@ -46,7 +44,7 @@ namespace HR_Board.Services.Users
             }
         }
 
-        public async Task<AuthResult> Authenticate(string email, string password)
+        public async Task<AuthResult> AuthenticateAsync(string email, string password)
         {
             var managedUser = await _userManager.FindByEmailAsync(email);
             if (managedUser == null)

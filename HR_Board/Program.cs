@@ -14,6 +14,11 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using HR_Board.Services.Interfaces;
 using HR_Board.Services.Users;
+using FluentValidation.AspNetCore;
+using HR_Board.Data.Validators;
+using FluentValidation;
+using HR_Board.Data.ModelDTO;
+using HR_Board.Services.JobService;
 
 namespace HR_Board
 {
@@ -30,7 +35,9 @@ namespace HR_Board
 
             builder.Services.AddScoped<JWTTokenService>();
             builder.Services.AddScoped<UserService>();
+            builder.Services.AddScoped<IJobService, JobService>();
             builder.Services.AddTransient<IUserService, UserService>();
+            builder.Services.AddScoped<IValidator<CreateJobRequestDto>, CreateJobRequestDtoValidator>();
 
             builder.Services.AddIdentity<ApiUser, IdentityRole<Guid>>(options =>
             {
@@ -45,6 +52,7 @@ namespace HR_Board
 
             builder.Services.AddControllers();
             builder.Services.AddProblemDetails();
+            builder.Services.AddAutoMapper(typeof(Program));
 
             builder.Services.AddEndpointsApiExplorer();
 
@@ -56,17 +64,16 @@ namespace HR_Board
             });
 
 
-            var jwtSettings = new JwtTokenSettings();
-            builder.Configuration.GetSection("JwtTokenSettings").Bind(jwtSettings);
-
             // Set the default authentication scheme
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
+                    var jwtSettings = new JwtTokenSettings();
+                    builder.Configuration.GetSection("JwtTokenSettings").Bind(jwtSettings);
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetValue<string>(jwtSettings.SymmetricSecurityKey)!)),
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SymmetricSecurityKey)),
                         ValidateIssuer = false,
                         ValidateAudience = false,
                     };
@@ -101,8 +108,7 @@ namespace HR_Board
             // Healthcheck registration
             builder.Services.AddHealthChecks()
                 .AddDbContextCheck<AppDbContext>();
-
-
+            
             var app = builder.Build();
 
             app.UseExceptionHandler();
