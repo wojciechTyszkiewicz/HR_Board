@@ -66,7 +66,7 @@ namespace HR_Board.Controllers
         public async Task<ActionResult<UserDto>> GetCurrentUser()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = await _userService.GetUserById(userId);
+            var user = await _userService.GetUserByIdAsync(userId);
 
             var userDto = new UserDto
             {

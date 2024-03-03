@@ -84,7 +84,7 @@ namespace HR_Board.Services.Users
             };
         }
 
-        public async Task<GetUserByIdResult> GetUserById(string userId)
+        public async Task<GetUserByIdResult> GetUserByIdAsync(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
 
