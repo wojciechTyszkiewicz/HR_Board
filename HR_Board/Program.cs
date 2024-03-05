@@ -84,7 +84,7 @@ namespace HR_Board
                 // blockade durance
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                 // max. number of unssuccesful authentication attempts
-                options.Lockout.MaxFailedAccessAttempts = 3;
+                options.Lockout.MaxFailedAccessAttempts = 1;
                 // should new users be blocked
                 options.Lockout.AllowedForNewUsers = true;
             });
