@@ -1,4 +1,5 @@
 ﻿using HR_Board.Data;
+using HR_Board.Data.ModelDTO;
 using HR_Board.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 
@@ -17,6 +18,7 @@ namespace HR_Board.Services.Users
 
         public async Task<RegistrationResult> RegisterAsync(string email, string password, Profile profile)
         {
+
             var user = new ApiUser
             {
                 Email = email,
@@ -50,11 +52,29 @@ namespace HR_Board.Services.Users
                 return new AuthResult(false, "User not found");
             }
 
+            //check, if user is blocked
+            if (await _userManager.IsLockedOutAsync(managedUser))
+            {
+                return new AuthResult(false, "User account is blocked.");
+            }
+
             var isPasswordValid = await _userManager.CheckPasswordAsync(managedUser, password);
             if (!isPasswordValid)
             {
+                // unsuccessfull authenticate attempt, aupdate unssuccesful atempt acounter
+                await _userManager.AccessFailedAsync(managedUser);
+
+                // Check again, if user is blocked after this unsuccessful attempt
+                if (await _userManager.IsLockedOutAsync(managedUser))
+                {
+                    return new AuthResult(false, "User account is locked.");
+                }
+
                 return new AuthResult(false, "Bad credentials");
             }
+
+            // reset unsuccessful authentication atempts acounter, if authentication was successfull
+            await _userManager.ResetAccessFailedCountAsync(managedUser);
 
             var accessToken = _tokenService.GenerateJwtToken(managedUser);
 
@@ -64,9 +84,24 @@ namespace HR_Board.Services.Users
             };
         }
 
+        public async Task<GetUserByIdResult> GetUserByIdAsync(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+
+            var userInfo = new GetUserByIdResult
+            {
+                Id = user.Id,
+                CreatedAt = user.CreatedAt,
+                UpdatedAt = user.UpdatedAt,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email
+            };
+            return userInfo;
+        }
+
         public static RegistrationResult CreateRegistrationResponse(ApiUser user, bool success, string message)
         {
-
             return new RegistrationResult
             {
                 Success = success,
@@ -79,6 +114,7 @@ namespace HR_Board.Services.Users
                 Email = user.Email
             };
         }
+
     }
 }
 

@@ -36,7 +36,7 @@ namespace HR_Board.Mappers
         {
             return new AuthResponseDTO
             {
-                User = new UserDTO
+                User = new UserDto
                 {
                     Id = result.User.Id.ToString(),
                     CreatedAt = result.User.CreatedAt.ToString(),

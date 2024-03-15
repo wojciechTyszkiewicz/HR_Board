@@ -2,7 +2,7 @@
 {
     public class AuthResponseDTO
     {
-        public UserDTO User { get; set; }
+        public UserDto User { get; set; }
         public required string Token { get; set; }
     }
 }
