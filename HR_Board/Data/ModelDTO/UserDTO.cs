@@ -2,7 +2,7 @@
 
 namespace HR_Board.Data.ModelDTO
 {
-    public class UserDTO
+    public class UserDto
     {
         public string Id { get; set; }
         public string CreatedAt { get; set; }

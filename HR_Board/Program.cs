@@ -78,6 +78,17 @@ namespace HR_Board
                         ValidateAudience = false,
                     };
                 });
+
+            builder.Services.Configure<IdentityOptions>(options =>
+            {
+                // blockade durance
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                // max. number of unssuccesful authentication attempts
+                options.Lockout.MaxFailedAccessAttempts = 1;
+                // should new users be blocked
+                options.Lockout.AllowedForNewUsers = true;
+            });
+
             //Swager configuration
             builder.Services.AddSwaggerGen(opt =>
             {
