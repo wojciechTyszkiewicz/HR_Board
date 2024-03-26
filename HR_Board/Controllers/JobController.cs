@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using HR_Board.Controllers;
 using HR_Board.Data;
+using HR_Board.Data.Entities;
 using HR_Board.Data.Enums;
 using HR_Board.Data.ModelDTO;
 using HR_Board.Mappers;
@@ -122,6 +123,13 @@ namespace WebApi.Controllers
             return ReturnStatusCode(response);
         }
 
+        // GET: api/Job/search
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<Job>>> SearchJobs(string title, string description)
+        {
+            var jobs = await _jobService.SearchJobsAsync(title, description);
+            return Ok(jobs);
+        }
 
     }
 }
