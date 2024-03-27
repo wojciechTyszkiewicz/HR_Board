@@ -100,12 +100,24 @@ namespace HR_Board.Services.JobService
 
             var jobToUpdateStatus = await GetByIdAsync(id);
             jobToUpdateStatus.Status = state;
-/*            _context.Entry(jobToUpdateStatus).State = EntityState.Modified;*/
+            /*            _context.Entry(jobToUpdateStatus).State = EntityState.Modified;*/
             var r = await _context.SaveChangesAsync();
 
             return new OperationResponse(r == 1, OperationResponseStatus.Success);
         }
 
+        public async Task<IEnumerable<Job>> SearchJobsAsync(string title, string description)
+        {
+
+            var jobs = await _context.Jobs.Where(j => 
+            (title != null && description != null && (j.Title.Contains(title) || j.ShortDescription.Contains(description) || j.LongDescription.Contains(description))) || // both value are not null and one at least fits
+            (title == null && description != null && (j.ShortDescription.Contains(description) || j.LongDescription.Contains(description))) || // only description is not null and fits
+            (description == null && title != null && j.Title.Contains(title)) // only title is not null and fits
+            ).Where(j => j.Status == JobStatus.Open) // status must be open condition
+            .ToListAsync();
+
+            return jobs;
+        }
 
         //Todo: move to authentication class service ?
 
@@ -117,5 +129,7 @@ namespace HR_Board.Services.JobService
             }
             return false;
         }
+
+
     }
 }

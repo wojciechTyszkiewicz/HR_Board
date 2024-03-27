@@ -21,6 +21,8 @@ namespace HR_Board.Services.Interfaces
 
         public Task<OperationResponse> UpdateJobStatusAsync(Guid id, Guid userId, JobStatus state);
 
+        Task<IEnumerable<Job>> SearchJobsAsync(string title, string description);
+
         bool HasAuthotization(Operation operation, Job job, Guid userId);
     };
 
