@@ -1,6 +1,6 @@
-﻿using HR_Board.Data.Interfaces;
+﻿using HR_Board.Data.Entities.Interfaces;
 
-namespace HR_Board.Data
+namespace HR_Board.Data.Entities
 {
     public abstract class BaseEntity : IBaseEntity
     {

@@ -1,6 +1,5 @@
 ﻿using HealthChecks.UI.Client;
 using HR_Board.Config;
-using HR_Board.Data;
 using HR_Board.Services;
 using HR_Board.Utils;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -19,6 +18,7 @@ using HR_Board.Data.Validators;
 using FluentValidation;
 using HR_Board.Data.ModelDTO;
 using HR_Board.Services.JobService;
+using HR_Board.Data.Entities;
 
 namespace HR_Board
 {

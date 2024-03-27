@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using HR_Board.Data;
 using HR_Board.Data.Entities;
 using HR_Board.Data.Enums;
 using HR_Board.Data.ModelDTO;

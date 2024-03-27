@@ -1,4 +1,4 @@
-﻿using HR_Board.Data;
+﻿using HR_Board.Data.Entities;
 
 namespace HR_Board.Services.Users
 {

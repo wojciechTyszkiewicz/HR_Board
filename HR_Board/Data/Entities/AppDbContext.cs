@@ -1,12 +1,11 @@
-﻿using HR_Board.Data.Entities;
-using HR_Board.Data.Interfaces;
+﻿using HR_Board.Data.Entities.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Reflection;
 
-namespace HR_Board.Data
+namespace HR_Board.Data.Entities
 {
     public class AppDbContext : IdentityDbContext<ApiUser, IdentityRole<Guid>, Guid>
     {
@@ -42,9 +41,9 @@ namespace HR_Board.Data
         private void AppDbContext_SavingChanges(object sender, SavingChangesEventArgs e)
         {
             ChangeTracker.DetectChanges();
-            
-/*            var entities = ChangeTracker.Entries()
-                .Where(x => x.State == EntityState.Modified);*/
+
+            /*            var entities = ChangeTracker.Entries()
+                            .Where(x => x.State == EntityState.Modified);*/
 
 
             foreach (var entry in ChangeTracker.Entries())

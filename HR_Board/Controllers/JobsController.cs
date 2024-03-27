@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using HR_Board.Controllers;
-using HR_Board.Data;
 using HR_Board.Data.Entities;
 using HR_Board.Data.Enums;
 using HR_Board.Data.ModelDTO;
@@ -15,15 +14,15 @@ namespace WebApi.Controllers
 {
 
 
-    [Route("api/[controller]")]
+    [Route("jobs")]
     [ApiController]
-    public class JobController : HrController
+    public class JobsController : HrController
     {
         private readonly IJobService _jobService;
         private readonly UserManager<ApiUser> _userManager;
         private readonly IMapper _mapper;
 
-        public JobController(IJobService jobService, UserManager<ApiUser> userManager, IMapper mapper, LinkGenerator linkGenerator) : base("Job", linkGenerator)
+        public JobsController(IJobService jobService, UserManager<ApiUser> userManager, IMapper mapper, LinkGenerator linkGenerator) : base("Job", linkGenerator)
         {
             _jobService = jobService;
             _userManager = userManager;

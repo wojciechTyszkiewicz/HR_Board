@@ -1,5 +1,5 @@
 ﻿using HR_Board.Config;
-using HR_Board.Data;
+using HR_Board.Data.Entities;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

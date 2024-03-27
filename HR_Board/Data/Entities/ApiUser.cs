@@ -1,8 +1,7 @@
-﻿using HR_Board.Data.Entities;
-using HR_Board.Data.Interfaces;
+﻿using HR_Board.Data.Entities.Interfaces;
 using Microsoft.AspNetCore.Identity;
 
-namespace HR_Board.Data
+namespace HR_Board.Data.Entities
 {
     public class ApiUser : IdentityUser<Guid>, IBaseEntity
     {

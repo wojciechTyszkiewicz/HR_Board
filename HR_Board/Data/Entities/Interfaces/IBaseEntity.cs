@@ -1,4 +1,4 @@
-﻿namespace HR_Board.Data.Interfaces
+﻿namespace HR_Board.Data.Entities.Interfaces
 {
     public interface IBaseEntity
     {

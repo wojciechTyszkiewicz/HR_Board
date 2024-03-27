@@ -1,4 +1,4 @@
-﻿using HR_Board.Data;
+﻿using HR_Board.Data.Entities;
 using HR_Board.Data.ModelDTO;
 using HR_Board.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
